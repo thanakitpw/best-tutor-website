@@ -1,6 +1,6 @@
 # Project Checklist — Best Tutor Thailand Redesign
 
-> อัปเดตล่าสุด: 2026-03-14
+> อัปเดตล่าสุด: 2026-03-24
 > เป้าหมายหลัก: **Lead Generation** + **SEO**
 
 ---
@@ -18,15 +18,18 @@
 
 ### 1.2 Design ใน Paper
 - [x] Design System (สี, ฟอนต์, ปุ่ม, badges)
-- [x] Homepage — Desktop (1440px)
+- [x] Homepage — Desktop (1440px) — 10 sections ครบ
 - [ ] Homepage — Mobile (390px)
-- [ ] หน้าโปรไฟล์ติวเตอร์ — Desktop
+- [x] หน้ารายวิชาที่เปิดสอน (`/tutors/`) — 8 หมวดวิชา image cards
+- [x] หน้าวิชาย่อย — ภาษาอังกฤษ (`/subject/english/`) — Hero + Tutors + Benefits
+- [x] หน้าโปรไฟล์ติวเตอร์ (`/tutor/[slug]/`) — รูปซ้าย + ข้อมูลขวา + Shopee reviews
 - [ ] หน้าโปรไฟล์ติวเตอร์ — Mobile
-- [ ] หน้ารายการติวเตอร์ (Search/Filter)
-- [ ] หน้าหมวดวิชา
-- [ ] หน้าบทความ (Blog listing + Blog detail)
-- [ ] หน้าหาครูสอนพิเศษ (Lead Capture Form)
-- [ ] หน้าสมัครเป็นติวเตอร์
+- [x] หน้าหาครูสอนพิเศษ (`/find-tutor/`) — Illustration + Form + Progress bar
+- [x] หน้าบทความ (`/blog/`) — Sidebar + Grid 3 คอลัมน์ + Pagination
+- [x] หน้าบทความเดี่ยว (`/blog/[slug]/`) — Featured image + Content + Sidebar CTA
+- [x] หน้าสมัครเป็นติวเตอร์ (`/join-with-us/`) — Hero + 4 Benefits + Stats + CTA
+- [x] หน้าฟอร์มสมัครติวเตอร์ (`/tutor-register/`) — 3-step form
+- [x] หน้ารีวิว (`/review/`) — Star rating + Text + Image upload
 - [ ] Admin Dashboard
 - [ ] Admin จัดการติวเตอร์
 - [ ] Admin จัดการบทความ (CMS)
@@ -371,7 +374,7 @@
 
 | Phase | สถานะ | ความคืบหน้า |
 |---|---|---|
-| Phase 1: วางแผน | กำลังทำ | 80% |
+| Phase 1: วางแผน | กำลังทำ | 95% (เหลือ Mobile + Admin design) |
 | Phase 2: Setup | ยังไม่เริ่ม | 0% |
 | Phase 3: Frontend | ยังไม่เริ่ม | 0% |
 | Phase 4: Admin | ยังไม่เริ่ม | 0% |
