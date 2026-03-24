@@ -30,11 +30,11 @@
 - [x] หน้าสมัครเป็นติวเตอร์ (`/join-with-us/`) — Hero + 4 Benefits + Stats + CTA
 - [x] หน้าฟอร์มสมัครติวเตอร์ (`/tutor-register/`) — 3-step form
 - [x] หน้ารีวิว (`/review/`) — Star rating + Text + Image upload
-- [ ] Admin Dashboard
-- [ ] Admin จัดการติวเตอร์
-- [ ] Admin จัดการบทความ (CMS)
-- [ ] Admin จัดการ Lead
-- [ ] Admin จัดการรีวิว
+- [x] Admin Dashboard — Stats cards + Bar chart + Recent leads
+- [ ] Admin จัดการติวเตอร์ (ใช้ pattern เดียวกับ Lead table)
+- [ ] Admin จัดการบทความ CMS (ใช้ pattern เดียวกับ Lead table + Tiptap editor)
+- [x] Admin จัดการ Lead — Search + Filter tabs + Data table + Status badges
+- [ ] Admin จัดการรีวิว (ใช้ pattern เดียวกับ Lead table)
 
 ---
 
