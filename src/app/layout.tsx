@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Plus_Jakarta_Sans, Noto_Sans_Thai } from "next/font/google";
+import { Providers } from "@/components/providers";
 import "./globals.css";
 
 const jakarta = Plus_Jakarta_Sans({
@@ -62,7 +63,9 @@ export default function RootLayout({
       lang="th"
       className={`${jakarta.variable} ${notoThai.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        <Providers>{children}</Providers>
+      </body>
     </html>
   );
 }
