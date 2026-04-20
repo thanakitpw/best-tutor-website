@@ -1,0 +1,289 @@
+// Best Tutor Thailand — Prisma Schema
+// Ref: CLAUDE.md "Database Schema" + "SEO-First Rules"
+// Provider: PostgreSQL (Supabase)
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// =============================================================================
+// Enums
+// =============================================================================
+
+enum UserRole {
+  SUPER_ADMIN
+  ADMIN
+  EDITOR
+}
+
+enum TutorStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  INACTIVE
+}
+
+enum ArticleStatus {
+  DRAFT
+  PUBLISHED
+}
+
+enum LeadStatus {
+  NEW
+  CONTACTED
+  MATCHED
+  CLOSED
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+}
+
+// =============================================================================
+// Users (Supabase Auth mirror — id = auth.users.id)
+// =============================================================================
+
+model User {
+  id        String   @id @db.Uuid
+  email     String   @unique
+  name      String?
+  role      UserRole @default(EDITOR)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  articles Article[]
+
+  @@index([role])
+  @@map("users")
+}
+
+// =============================================================================
+// Tutors
+// =============================================================================
+
+model Tutor {
+  id                      String      @id @default(cuid())
+  slug                    String      @unique
+  nickname                String
+  firstName               String      @map("first_name")
+  lastName                String      @map("last_name")
+  gender                  Gender?
+  email                   String?
+  phone                   String?
+  lineId                  String?     @map("line_id")
+  profileImageUrl         String?     @map("profile_image_url")
+  education               String?
+  occupation              String?
+  teachingExperienceYears Int         @default(0) @map("teaching_experience_years")
+  teachingStyle           String?     @map("teaching_style")
+  subjectsTaught          String?     @map("subjects_taught") // free-text summary; relational mapping via TutorSubject
+  ratePricing             String?     @map("rate_pricing")
+  address                 String?
+  vehicleType             String?     @map("vehicle_type")
+  documents               Json?       // { resumeUrl, idCardUrl, credentialsUrls[] }
+  status                  TutorStatus @default(PENDING)
+  isPopular               Boolean     @default(false) @map("is_popular")
+
+  // SEO fields (per CLAUDE.md SEO-First Rules)
+  seoTitle        String? @map("seo_title")
+  seoDescription  String? @map("seo_description")
+  seoKeywords     String? @map("seo_keywords")
+  ogImageUrl      String? @map("og_image_url")
+  canonicalUrl    String? @map("canonical_url")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  tutorSubjects TutorSubject[]
+  reviews       Review[]
+
+  @@index([slug])
+  @@index([status])
+  @@index([isPopular])
+  @@map("tutors")
+}
+
+// =============================================================================
+// Subject taxonomy
+// =============================================================================
+
+model SubjectCategory {
+  id        String  @id @default(cuid())
+  name      String
+  slug      String  @unique
+  icon      String?
+  sortOrder Int     @default(0) @map("sort_order")
+
+  // SEO fields
+  seoTitle       String? @map("seo_title")
+  seoDescription String? @map("seo_description")
+  seoKeywords    String? @map("seo_keywords")
+  ogImageUrl     String? @map("og_image_url")
+  canonicalUrl   String? @map("canonical_url")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  subjects Subject[]
+
+  @@index([slug])
+  @@map("subject_categories")
+}
+
+model Subject {
+  id         String @id @default(cuid())
+  categoryId String @map("category_id")
+  name       String
+  slug       String @unique
+  sortOrder  Int    @default(0) @map("sort_order")
+
+  // SEO fields
+  seoTitle       String? @map("seo_title")
+  seoDescription String? @map("seo_description")
+  seoKeywords    String? @map("seo_keywords")
+  ogImageUrl     String? @map("og_image_url")
+  canonicalUrl   String? @map("canonical_url")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  category      SubjectCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  tutorSubjects TutorSubject[]
+  courses       Course[]
+
+  @@index([categoryId])
+  @@index([slug])
+  @@map("subjects")
+}
+
+model TutorSubject {
+  tutorId   String   @map("tutor_id")
+  subjectId String   @map("subject_id")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  tutor   Tutor   @relation(fields: [tutorId], references: [id], onDelete: Cascade)
+  subject Subject @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+
+  @@id([tutorId, subjectId])
+  @@index([subjectId])
+  @@map("tutor_subjects")
+}
+
+// =============================================================================
+// Articles (Blog / CMS)
+// =============================================================================
+
+model Article {
+  id               String        @id @default(cuid())
+  title            String
+  slug             String        @unique
+  content          Json          // Tiptap JSON document
+  excerpt          String?
+  featuredImageUrl String?       @map("featured_image_url")
+  category         String?
+  tags             String[]      @default([])
+  authorId         String?       @map("author_id") @db.Uuid
+  status           ArticleStatus @default(DRAFT)
+  publishedAt      DateTime?     @map("published_at")
+
+  // SEO fields
+  seoTitle       String? @map("seo_title")
+  seoDescription String? @map("seo_description")
+  seoKeywords    String? @map("seo_keywords")
+  ogImageUrl     String? @map("og_image_url")
+  canonicalUrl   String? @map("canonical_url")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  author User? @relation(fields: [authorId], references: [id], onDelete: SetNull)
+
+  @@index([slug])
+  @@index([status])
+  @@index([publishedAt])
+  @@index([category])
+  @@map("articles")
+}
+
+// =============================================================================
+// Leads (from "find tutor" form)
+// =============================================================================
+
+model Lead {
+  id              String     @id @default(cuid())
+  subjectCategory String?    @map("subject_category")
+  subject         String?
+  learningGoal    String?    @map("learning_goal")
+  studentAgeGroup String?    @map("student_age_group")
+  province        String?
+  district        String?
+  fullName        String     @map("full_name")
+  email           String?
+  phone           String
+  lineId          String?    @map("line_id")
+  status          LeadStatus @default(NEW)
+  notes           String?
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([status])
+  @@index([createdAt])
+  @@map("leads")
+}
+
+// =============================================================================
+// Reviews (Shopee-style)
+// =============================================================================
+
+model Review {
+  id           String   @id @default(cuid())
+  tutorId      String   @map("tutor_id")
+  reviewerName String   @map("reviewer_name")
+  rating       Int      // 1-5
+  comment      String?
+  images       String[] @default([])
+  isVerified   Boolean  @default(false) @map("is_verified")
+  isVisible    Boolean  @default(true) @map("is_visible")
+  adminReply   String?  @map("admin_reply")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  tutor Tutor @relation(fields: [tutorId], references: [id], onDelete: Cascade)
+
+  @@index([tutorId])
+  @@index([isVisible])
+  @@index([rating])
+  @@map("reviews")
+}
+
+// =============================================================================
+// Courses (recommended courses per subject)
+// =============================================================================
+
+model Course {
+  id               String  @id @default(cuid())
+  title            String
+  description      String?
+  subjectId        String  @map("subject_id")
+  durationHours    Int?    @map("duration_hours")
+  featuredImageUrl String? @map("featured_image_url")
+  isFeatured       Boolean @default(false) @map("is_featured")
+  sortOrder        Int     @default(0) @map("sort_order")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  subject Subject @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+
+  @@index([subjectId])
+  @@index([isFeatured])
+  @@map("courses")
+}

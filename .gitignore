@@ -31,5 +31,14 @@ yarn-error.log*
 coverage/
 *.lcov
 
-# Prisma (เมื่อเริ่ม Phase 2)
+# TypeScript incremental build
+*.tsbuildinfo
+
+# Playwright
+playwright-report/
+test-results/
+/playwright/.cache/
+
+# Prisma
 prisma/migrations/dev/
+src/generated/prisma/
