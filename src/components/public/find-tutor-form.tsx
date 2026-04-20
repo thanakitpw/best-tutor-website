@@ -514,9 +514,11 @@ export function FindTutorForm({ initialValues }: FindTutorFormProps) {
                               : "border-[color:var(--color-border)] bg-white hover:border-[color:var(--color-primary)]/40 hover:bg-[color:var(--color-light-bg)]/60",
                           ].join(" ")}
                         >
-                          <span className="text-2xl leading-none md:text-3xl" aria-hidden>
-                            {cat.icon}
-                          </span>
+                          <cat.icon
+                            aria-hidden
+                            className="h-7 w-7 text-[color:var(--color-primary)] md:h-8 md:w-8"
+                          />
+                          {/* lucide icon replaces previous emoji visual */}
                           <span
                             className={[
                               "text-sm font-semibold leading-tight",

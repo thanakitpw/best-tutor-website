@@ -105,10 +105,10 @@ export async function generateMetadata({
   const mainSubject = tutor.subjects[0] ?? "ติวเตอร์";
   const ratingLabel = stats.total > 0 ? stats.average.toFixed(1) : tutor.rating.toFixed(1);
 
-  const title = `${displayName} ติวเตอร์${mainSubject} ★${ratingLabel} | Best Tutor Thailand`;
+  const title = `${displayName} ติวเตอร์${mainSubject} คะแนน ${ratingLabel}/5 | Best Tutor Thailand`;
   const description = `${displayName} ติวเตอร์${tutor.subjects.join(" · ")} จาก${tutor.education} สอนตัวต่อตัวทั้งที่บ้านและออนไลน์${
     tutor.province ? ` พื้นที่ ${tutor.province}` : ""
-  } เริ่มต้น ฿${tutor.ratePricing.toLocaleString("th-TH")}/ชม. ★${ratingLabel} จาก ${stats.total || tutor.reviewCount} รีวิว`;
+  } เริ่มต้น ฿${tutor.ratePricing.toLocaleString("th-TH")}/ชม. คะแนน ${ratingLabel}/5 จาก ${stats.total || tutor.reviewCount} รีวิว`;
 
   return buildMetadata({
     title,

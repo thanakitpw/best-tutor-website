@@ -7,13 +7,26 @@
  * resolve 1:1 without lossy lookups.
  */
 
+import {
+  BookType,
+  Calculator,
+  FlaskConical,
+  Landmark,
+  Languages,
+  Laptop,
+  Music,
+  Palette,
+  Trophy,
+  type LucideIcon,
+} from "lucide-react";
+
 export interface FindTutorCategory {
   /** URL-safe slug — also matches HeroSearch `subject` param. */
   slug: string;
   /** Thai label shown to the user and sent to the API as subjectCategory. */
   label: string;
-  /** Emoji icon — cheap visual differentiator, no external asset dependency. */
-  icon: string;
+  /** Lucide icon component rendered inside the category card. */
+  icon: LucideIcon;
   /** Short marketing sub-text shown under the name on the card. */
   hint: string;
   /** Optional child subjects (rendered as a dependent select). */
@@ -28,7 +41,7 @@ export const FIND_TUTOR_CATEGORIES: ReadonlyArray<FindTutorCategory> = [
   {
     slug: "language",
     label: "ภาษาต่างประเทศ",
-    icon: "🌏",
+    icon: Languages,
     hint: "อังกฤษ · จีน · ญี่ปุ่น · เกาหลี",
     subjects: [
       { slug: "english", label: "ภาษาอังกฤษ" },
@@ -40,7 +53,7 @@ export const FIND_TUTOR_CATEGORIES: ReadonlyArray<FindTutorCategory> = [
   {
     slug: "math",
     label: "คณิตศาสตร์",
-    icon: "🧮",
+    icon: Calculator,
     hint: "ม.ต้น · ม.ปลาย · แคลคูลัส",
     subjects: [
       { slug: "math-general", label: "คณิตทั่วไป" },
@@ -52,7 +65,7 @@ export const FIND_TUTOR_CATEGORIES: ReadonlyArray<FindTutorCategory> = [
   {
     slug: "science",
     label: "วิทยาศาสตร์",
-    icon: "🔬",
+    icon: FlaskConical,
     hint: "ฟิสิกส์ · เคมี · ชีววิทยา",
     subjects: [
       { slug: "physics", label: "ฟิสิกส์" },
@@ -64,13 +77,13 @@ export const FIND_TUTOR_CATEGORIES: ReadonlyArray<FindTutorCategory> = [
   {
     slug: "thai",
     label: "ภาษาไทย",
-    icon: "🇹🇭",
+    icon: BookType,
     hint: "อ่าน · เขียน · สอบเข้า",
   },
   {
     slug: "social",
     label: "สังคมศึกษา",
-    icon: "🏛️",
+    icon: Landmark,
     hint: "ประวัติศาสตร์ · เศรษฐศาสตร์ · กฎหมาย",
     subjects: [
       { slug: "law", label: "กฎหมาย" },
@@ -81,7 +94,7 @@ export const FIND_TUTOR_CATEGORIES: ReadonlyArray<FindTutorCategory> = [
   {
     slug: "computer",
     label: "คอมพิวเตอร์",
-    icon: "💻",
+    icon: Laptop,
     hint: "Coding · พื้นฐานคอม",
     subjects: [
       { slug: "computer-basic", label: "คอมพื้นฐาน" },
@@ -91,7 +104,7 @@ export const FIND_TUTOR_CATEGORIES: ReadonlyArray<FindTutorCategory> = [
   {
     slug: "art",
     label: "ศิลปะ",
-    icon: "🎨",
+    icon: Palette,
     hint: "วาดรูป · กราฟิกดีไซน์",
     subjects: [
       { slug: "drawing", label: "วาดรูป" },
@@ -101,7 +114,7 @@ export const FIND_TUTOR_CATEGORIES: ReadonlyArray<FindTutorCategory> = [
   {
     slug: "music",
     label: "ดนตรี",
-    icon: "🎵",
+    icon: Music,
     hint: "กีตาร์ · กลอง · เปียโน · เต้น",
     subjects: [
       { slug: "guitar", label: "กีตาร์" },
@@ -113,7 +126,7 @@ export const FIND_TUTOR_CATEGORIES: ReadonlyArray<FindTutorCategory> = [
   {
     slug: "sport",
     label: "กีฬา",
-    icon: "🏓",
+    icon: Trophy,
     hint: "ว่ายน้ำ · เทควันโด · โยคะ",
     subjects: [
       { slug: "swimming", label: "ว่ายน้ำ" },

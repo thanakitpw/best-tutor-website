@@ -229,7 +229,7 @@ export default function JoinWithUsPage() {
                 items={[
                   { value: "30,000+", label: "นักเรียนในระบบ" },
                   { value: "500+", label: "ติวเตอร์คุณภาพ" },
-                  { value: "4.8 ★", label: "คะแนนเฉลี่ย" },
+                  { value: "4.8", label: "คะแนนเฉลี่ย" },
                 ]}
               />
             </div>
