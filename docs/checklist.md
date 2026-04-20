@@ -548,14 +548,14 @@ Status: `[ ]` = todo · `[x]` = done · `[~]` = in progress · `[!]` = blocked
 
 | Phase | Owner หลัก | สถานะ | ความคืบหน้า |
 |---|---|---|---|
-| Phase 0: Pre-dev Prep | 👑 Lead | ยังไม่เริ่ม | 0% (blocking) |
+| Phase 0: Pre-dev Prep | 👑 Lead | skip (ลูกค้าเก็บ data ครบ) | — |
 | Phase 1: Design | 🎨 FE + 🛠️ AD | กำลังทำ | 95% (เหลือ Mobile + Admin designs + sticky CTA) |
-| Phase 2: Setup | 👑 Lead + ⚙️ BE + 📈 SEO | ยังไม่เริ่ม | 0% |
+| Phase 2: Setup | 👑 Lead + ⚙️ BE + 📈 SEO | **เสร็จ 2026-04-20** ✅ | 100% (ยังไม่ได้ `prisma db push` — รอ Supabase creds) |
 | Phase 3: Frontend | 🎨 FE + ⚙️ BE + 📈 SEO | ยังไม่เริ่ม | 0% |
 | Phase 4: Admin | 🛠️ AD + ⚙️ BE | ยังไม่เริ่ม | 0% |
 | Phase 5: SEO Content | 📈 SEO | ยังไม่เริ่ม | 0% |
 | Phase 6: Integration | ⚙️ BE + 🎨 FE | ยังไม่เริ่ม | 0% |
-| Phase 7: Testing | 🔍 QA | ยังไม่เริ่ม | 0% |
+| Phase 7: Testing | 🔍 QA | foundation พร้อม (Vitest/Playwright/CI) | infra 100% · feature tests 0% |
 | Phase 8: Migration | 👑 Lead + ⚙️ BE | ยังไม่เริ่ม | 0% |
 | Phase 9: Deploy | 👑 Lead + 📈 SEO | ยังไม่เริ่ม | 0% |
 
