@@ -6,9 +6,13 @@
 //   - DATABASE_URL: pooled Postgres connection (used by the runtime client)
 //   - DIRECT_URL:   direct Postgres connection (used for migrations + `prisma db push`)
 
-import "dotenv/config";
+import { config as loadEnv } from "dotenv";
 import path from "node:path";
 import { defineConfig } from "prisma/config";
+
+// Load .env.local first (Next.js convention), then fall back to .env
+loadEnv({ path: ".env.local" });
+loadEnv();
 
 export default defineConfig({
   schema: path.join("prisma", "schema.prisma"),
