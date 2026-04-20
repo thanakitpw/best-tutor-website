@@ -1,0 +1,35 @@
+# Claude Code runtime state
+.claude/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Node (เมื่อเริ่ม Phase 2)
+node_modules/
+.next/
+out/
+build/
+dist/
+
+# Env
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Coverage
+coverage/
+*.lcov
+
+# Prisma (เมื่อเริ่ม Phase 2)
+prisma/migrations/dev/

@@ -1,385 +1,612 @@
 # Project Checklist — Best Tutor Thailand Redesign
 
-> อัปเดตล่าสุด: 2026-03-24
+> อัปเดตล่าสุด: 2026-04-20
 > เป้าหมายหลัก: **Lead Generation** + **SEO**
+> การทำงาน: **Agent Team** ตาม `CLAUDE.md` → ทุก task มี owner (teammate) + skills ที่ใช้
 
 ---
 
-## Phase 1: วางแผนและออกแบบ
+## Legend
 
-### 1.1 วิเคราะห์และเก็บข้อมูล
-- [x] สร้าง CLAUDE.md (tech stack, DB schema, โครงสร้าง, กฎ)
-- [x] สำรวจเว็บเดิม besttutorthailand.com อย่างละเอียด
-- [x] เก็บรายการรูปภาพทั้งหมดจากเว็บเดิม (165+ รูป)
-- [x] วิเคราะห์คู่แข่ง bestkru.com
-- [x] เขียน UX/UI Analysis (`docs/ux-ui-analysis.md`)
-- [x] ติดตั้ง Antigravity Skills (82 skills)
-- [x] Git init + Push to GitHub
+| Emoji | Teammate | ย่อ |
+|---|---|---|
+| 🎨 | Frontend Dev | FE |
+| ⚙️ | Backend Dev | BE |
+| 🛠️ | Admin Dev | AD |
+| 📈 | SEO & Content | SEO |
+| 🔍 | QA Reviewer | QA |
+| 👑 | Lead (session นี้) | Lead |
+
+Status: `[ ]` = todo · `[x]` = done · `[~]` = in progress · `[!]` = blocked
+
+---
+
+## Phase 0: Pre-dev Prep (ใหม่ — ต้องเสร็จก่อน Phase 2)
+
+### 0.1 ขอข้อมูลจากลูกค้า (blocking)
+- [ ] 👑 ขอ Google Search Console access (ดู keyword ที่ติดอันดับ)
+- [ ] 👑 ขอ Google Analytics access (12 เดือนย้อนหลัง)
+- [ ] 👑 ขอ WordPress admin access (export content)
+- [ ] 👑 ขอรายชื่อติวเตอร์ 103 คน + slug ที่ใช้อยู่
+- [ ] 👑 ขอ keyword เป้าหมาย (ถ้ามี)
+- [ ] 👑 ขอ logo ต้นฉบับ + brand assets
+
+### 0.2 ตัดสินใจ URL strategy
+- [ ] 👑 ตัดสินใจ Option A (URL ตรงเว็บเดิม) หรือ Option B (URL ย่อ + 301) — อ้าง `docs/seo-migration-audit.md`
+- [ ] 👑 อัปเดต `CLAUDE.md` URL Structure section ตามที่ตัดสินใจ
+- [ ] 👑 อัปเดต `docs/seo-migration-audit.md` confirm 301 redirect map
+
+### 0.3 Backup เว็บเดิม
+- [ ] 👑 Export WordPress database (`.sql`)
+- [ ] 👑 Export WordPress media library (`wp-content/uploads/`)
+- [ ] 👑 บันทึก `wp-sitemap.xml`
+- [ ] 👑 Screenshot หน้าหลัก 15 หน้า
+- [ ] 👑 Download รูปติวเตอร์ (65 คนที่มีรูป)
+- [ ] 👑 Download รูปบทความ 12 ตัว (OG images)
+- [ ] 👑 Download logo + partner logos 29 รูป
+
+---
+
+## Phase 1: วางแผนและออกแบบ (95% done)
+
+### 1.1 วิเคราะห์และเก็บข้อมูล ✅
+- [x] 👑 สร้าง `CLAUDE.md`
+- [x] 👑 สำรวจเว็บเดิม
+- [x] 👑 วิเคราะห์คู่แข่ง bestkru.com
+- [x] 👑 เขียน `docs/ux-ui-analysis.md`
+- [x] 👑 ติดตั้ง Antigravity Skills (82 skills)
+- [x] 👑 Git init + Push to GitHub
+- [x] 👑 สร้าง `docs/seo-migration-audit.md` ← **ใหม่ 2026-04-20**
+- [x] 👑 อัปเดต CLAUDE.md เพิ่ม Agent Team Workflow + SEO-First Rules ← **ใหม่ 2026-04-20**
 
 ### 1.2 Design ใน Paper
-- [x] Design System (สี, ฟอนต์, ปุ่ม, badges)
-- [x] Homepage — Desktop (1440px) — 10 sections ครบ
-- [ ] Homepage — Mobile (390px)
-- [x] หน้ารายวิชาที่เปิดสอน (`/tutors/`) — 8 หมวดวิชา image cards
-- [x] หน้าวิชาย่อย — ภาษาอังกฤษ (`/subject/english/`) — Hero + Tutors + Benefits
-- [x] หน้าโปรไฟล์ติวเตอร์ (`/tutor/[slug]/`) — รูปซ้าย + ข้อมูลขวา + Shopee reviews
-- [ ] หน้าโปรไฟล์ติวเตอร์ — Mobile
-- [x] หน้าหาครูสอนพิเศษ (`/find-tutor/`) — Illustration + Form + Progress bar
-- [x] หน้าบทความ (`/blog/`) — Sidebar + Grid 3 คอลัมน์ + Pagination
-- [x] หน้าบทความเดี่ยว (`/blog/[slug]/`) — Featured image + Content + Sidebar CTA
-- [x] หน้าสมัครเป็นติวเตอร์ (`/join-with-us/`) — Hero + 4 Benefits + Stats + CTA
-- [x] หน้าฟอร์มสมัครติวเตอร์ (`/tutor-register/`) — 3-step form
-- [x] หน้ารีวิว (`/review/`) — Star rating + Text + Image upload
-- [x] Admin Dashboard — Stats cards + Bar chart + Recent leads
-- [ ] Admin จัดการติวเตอร์ (ใช้ pattern เดียวกับ Lead table)
-- [ ] Admin จัดการบทความ CMS (ใช้ pattern เดียวกับ Lead table + Tiptap editor)
-- [x] Admin จัดการ Lead — Search + Filter tabs + Data table + Status badges
-- [ ] Admin จัดการรีวิว (ใช้ pattern เดียวกับ Lead table)
+- [x] 🎨 Design System (สี, ฟอนต์, ปุ่ม, badges)
+- [x] 🎨 Homepage Desktop (1440px)
+- [ ] 🎨 Homepage Mobile (390px) — `/mobile-design`
+- [x] 🎨 `/tutors/` — 8 หมวดวิชา
+- [x] 🎨 `/subject/english/` — Hero + Tutors + Benefits
+- [x] 🎨 `/tutor/[slug]/` — รูปซ้าย + ข้อมูลขวา + Shopee reviews
+- [ ] 🎨 `/tutor/[slug]/` Mobile — `/mobile-design`
+- [x] 🎨 `/find-tutor/`
+- [x] 🎨 `/blog/`
+- [x] 🎨 `/blog/[slug]/`
+- [x] 🎨 `/join-with-us/`
+- [x] 🎨 `/tutor-register/`
+- [x] 🎨 `/review/`
+- [x] 🛠️ Admin Dashboard
+- [ ] 🛠️ Admin จัดการติวเตอร์ (pattern เดียวกับ Lead table)
+- [ ] 🛠️ Admin จัดการบทความ CMS (+ Tiptap editor)
+- [x] 🛠️ Admin จัดการ Lead
+- [ ] 🛠️ Admin จัดการรีวิว
+- [ ] 🎨 Sticky LINE/Call floating button ทุกหน้า (ขาดใน design) — `/form-cro`
+- [ ] 🎨 Tutor card พัฒนาเพิ่ม: ราคา + รีวิว + พื้นที่ (ขาดใน subject page)
+- [ ] 🎨 Subject page เพิ่ม Filter sidebar (ราคา/ประสบการณ์/พื้นที่/rating)
 
 ---
 
 ## Phase 2: Setup โปรเจกต์
 
-### 2.1 Init Next.js
-- [ ] `npx create-next-app@latest` (App Router, TypeScript, Tailwind CSS v4, ESLint)
-- [ ] ตั้งค่า `tsconfig.json` (path aliases `@/`)
-- [ ] ตั้งค่า `.env.local` (Supabase, Cloudinary, Line, Resend)
-- [ ] สร้าง `.gitignore` (ไม่ commit .env, node_modules)
-- [ ] สร้างโครงสร้างโฟลเดอร์ตาม CLAUDE.md
+### 2.1 Init Next.js (👑 Lead)
+- [ ] 👑 `npx create-next-app@latest` (App Router, TypeScript, Tailwind CSS v4, ESLint)
+- [ ] 👑 ตั้งค่า `tsconfig.json` (path aliases `@/`)
+- [ ] 👑 สร้าง `.env.local.example` + `.env.local` (Supabase, Cloudinary, Line, Resend)
+- [ ] 👑 สร้าง `.gitignore`
+- [ ] 👑 สร้างโครงสร้างโฟลเดอร์ตาม `CLAUDE.md`
+- [ ] 👑 ตั้งค่า `next.config.ts` — image domains (Cloudinary), 301 redirects จาก audit
+- [ ] 👑 commit + push — `chore: init Next.js 15 + Tailwind v4 + TypeScript`
 
-### 2.2 ติดตั้ง Dependencies
-- [ ] shadcn/ui (`npx shadcn@latest init` + components ที่ต้องใช้)
-- [ ] Prisma (`npx prisma init`)
-- [ ] Supabase client (`@supabase/supabase-js`, `@supabase/ssr`)
-- [ ] Zod (form validation)
-- [ ] React Hook Form
-- [ ] TanStack Query (data fetching)
-- [ ] Tiptap (WYSIWYG editor สำหรับ CMS)
-- [ ] Cloudinary SDK (`next-cloudinary`)
-- [ ] Resend (email)
-- [ ] Lucide React (icons)
+### 2.2 ติดตั้ง Dependencies (👑 Lead)
+- [ ] 👑 shadcn/ui init + components พื้นฐาน (Button, Input, Card, Dialog, Form, Table, Toast)
+- [ ] 👑 Prisma + `@prisma/client`
+- [ ] 👑 `@supabase/supabase-js` + `@supabase/ssr`
+- [ ] 👑 `zod` + `react-hook-form` + `@hookform/resolvers`
+- [ ] 👑 `@tanstack/react-query`
+- [ ] 👑 Tiptap (`@tiptap/react`, `@tiptap/starter-kit`, extensions)
+- [ ] 👑 `next-cloudinary` + `cloudinary`
+- [ ] 👑 `resend`
+- [ ] 👑 `lucide-react`
+- [ ] 👑 Fonts: Plus Jakarta Sans + Noto Sans Thai (via `next/font`)
+- [ ] 👑 commit + push — `chore: install core dependencies`
 
-### 2.3 ตั้งค่า Database (Supabase + Prisma)
-- [ ] สร้าง Supabase project
-- [ ] เชื่อม Prisma กับ Supabase PostgreSQL
-- [ ] สร้าง Prisma Schema:
-  - [ ] ตาราง `users` (admin, editor)
-  - [ ] ตาราง `tutors`
-  - [ ] ตาราง `subject_categories`
-  - [ ] ตาราง `subjects`
-  - [ ] ตาราง `tutor_subjects` (many-to-many)
-  - [ ] ตาราง `articles`
-  - [ ] ตาราง `leads`
-  - [ ] ตาราง `reviews`
-  - [ ] ตาราง `courses`
-- [ ] `npx prisma db push` (push schema ไป Supabase)
-- [ ] สร้าง Prisma client singleton (`lib/prisma.ts`)
-- [ ] Seed data หมวดวิชา 9 หมวด + 26 วิชาย่อย
+### 2.3 Database Setup (⚙️ Backend Dev)
+**skills:** `/prisma-expert` `/supabase` `/supabase-postgres-best-practices` `/database-design`
 
-### 2.4 ตั้งค่า Auth
-- [ ] ตั้งค่า Supabase Auth (Email + Password)
-- [ ] สร้าง Auth middleware (`middleware.ts`)
-- [ ] สร้าง Auth helpers (server/client)
-- [ ] ตั้งค่า Role-based access (super_admin, admin, editor)
-- [ ] สร้างหน้า Login สำหรับ Admin
+- [ ] ⚙️ สร้าง Supabase project
+- [ ] ⚙️ เชื่อม Prisma กับ Supabase PostgreSQL
+- [ ] ⚙️ เขียน `prisma/schema.prisma`:
+  - [ ] ⚙️ `User` (Supabase Auth UID, role, name, email)
+  - [ ] ⚙️ `Tutor` (+ SEO fields: seo_title, seo_description, seo_keywords, og_image_url, canonical_url)
+  - [ ] ⚙️ `SubjectCategory` (+ SEO fields)
+  - [ ] ⚙️ `Subject` (+ SEO fields)
+  - [ ] ⚙️ `TutorSubject` (many-to-many)
+  - [ ] ⚙️ `Article` (+ SEO fields, Tiptap JSON content)
+  - [ ] ⚙️ `Lead`
+  - [ ] ⚙️ `Review` (+ `images` URL array)
+  - [ ] ⚙️ `Course`
+- [ ] ⚙️ `npx prisma db push`
+- [ ] ⚙️ Prisma client singleton (`src/lib/prisma.ts`)
+- [ ] ⚙️ Seed data: 9 หมวด + 26 วิชาย่อย (`prisma/seed.ts`)
+- [ ] 🔍 QA review schema — `/code-reviewer`
+- [ ] 👑 commit + push — `feat(db): Prisma schema with SEO fields + seed categories`
 
-### 2.5 ตั้งค่า File Upload
-- [ ] สร้าง Cloudinary account + ตั้งค่า
-- [ ] สร้าง upload API route (`/api/upload`)
-- [ ] ตั้งค่า image optimization (auto format, resize)
-- [ ] ตั้งค่า Supabase Storage (สำหรับเอกสาร)
+### 2.4 Auth Setup (⚙️ Backend Dev)
+**skills:** `/nextjs-supabase-auth` `/auth-implementation-patterns`
 
-### 2.6 ตั้งค่า Line Messaging API
-- [ ] สร้าง Line OA channel
-- [ ] ตั้งค่า Channel Access Token
-- [ ] สร้าง Line notify helper (`lib/line.ts`)
-- [ ] ทดสอบส่ง push message
+- [ ] ⚙️ Supabase Auth (Email + Password)
+- [ ] ⚙️ `middleware.ts` — protect `/admin/*`
+- [ ] ⚙️ Auth helpers `src/lib/supabase/server.ts`, `client.ts`
+- [ ] ⚙️ Role-based access (super_admin, admin, editor) — row-level security ใน Supabase
+- [ ] ⚙️ Login page `/admin/login`
+- [ ] 🔍 QA security review — `/cc-skill-security-review`
+- [ ] 👑 commit + push — `feat(auth): Supabase auth + RBAC middleware`
+
+### 2.5 File Upload Setup (⚙️ Backend Dev)
+**skills:** `/file-uploads`
+
+- [ ] ⚙️ Cloudinary account + configure
+- [ ] ⚙️ API route `POST /api/upload` (Cloudinary signed upload)
+- [ ] ⚙️ Image transform presets (thumbnail, card, hero)
+- [ ] ⚙️ Supabase Storage bucket สำหรับเอกสาร (resume, id-card)
+- [ ] ⚙️ File validation (size, MIME type) ใน Zod
+- [ ] 👑 commit + push — `feat(upload): Cloudinary + Supabase storage endpoints`
+
+### 2.6 Line Messaging API Setup (⚙️ Backend Dev)
+- [ ] ⚙️ สร้าง Line OA channel + token
+- [ ] ⚙️ Helper `src/lib/line/notify.ts`
+- [ ] ⚙️ ทดสอบ push message
+- [ ] 👑 commit + push — `feat(line): Line OA push message helper`
+
+### 2.7 SEO Foundation (📈 SEO & Content)
+**skills:** `/seo-fundamentals` `/schema-markup` `/fixing-metadata`
+
+- [ ] 📈 `src/app/robots.ts` — dynamic robots
+- [ ] 📈 `src/app/sitemap.ts` — dynamic sitemap (อ่าน Prisma)
+- [ ] 📈 `src/lib/seo/` — helpers (generateMetadata defaults, JSON-LD builders)
+  - [ ] 📈 `site-metadata.ts` (site-wide defaults)
+  - [ ] 📈 `json-ld/organization.ts`
+  - [ ] 📈 `json-ld/website.ts` (+ SearchAction)
+  - [ ] 📈 `json-ld/local-business.ts`
+  - [ ] 📈 `json-ld/person.ts` (tutor)
+  - [ ] 📈 `json-ld/article.ts` (blog)
+  - [ ] 📈 `json-ld/breadcrumb.ts`
+  - [ ] 📈 `json-ld/faq.ts`
+  - [ ] 📈 `json-ld/item-list.ts`
+  - [ ] 📈 `json-ld/review.ts` (+ AggregateRating)
+- [ ] 📈 OG image generator (`src/app/opengraph-image.tsx` + per-route)
+- [ ] 🔍 QA review — `/code-reviewer` `/fixing-metadata`
+- [ ] 👑 commit + push — `feat(seo): foundation (sitemap, robots, JSON-LD builders)`
+
+### 2.8 Testing Setup (🔍 QA)
+**skills:** `/testing-patterns` `/test-driven-development`
+
+- [ ] 🔍 Vitest + `@testing-library/react`
+- [ ] 🔍 Playwright สำหรับ E2E
+- [ ] 🔍 GitHub Actions workflow (lint + test + type-check)
+- [ ] 👑 commit + push — `chore(test): Vitest + Playwright + CI`
 
 ---
 
 ## Phase 3: พัฒนาหน้าเว็บสาธารณะ (Frontend)
 
-### 3.1 Layout & Components พื้นฐาน
-- [ ] Root Layout (`app/layout.tsx`) — fonts, metadata, providers
-- [ ] Navbar component (Logo, เมนู, Search, CTA)
-- [ ] Footer component (4 คอลัมน์, Social links, Copyright)
-- [ ] Mobile navigation (hamburger menu)
-- [ ] Breadcrumb component
+**กฎ SEO-First:** ทุกหน้าต้องมี `generateMetadata` + JSON-LD ตามประเภท (อ้าง `CLAUDE.md` SEO-First Rules)
 
-### 3.2 หน้าแรก (Homepage) — สำคัญที่สุดสำหรับ Lead
-- [ ] Hero Section (รูปพื้นหลัง + overlay + Search Card + Stats)
-- [ ] Partners/University logos bar
-- [ ] หมวดวิชายอดนิยม (8 การ์ด + icon จากเว็บเดิม)
-- [ ] ติวเตอร์แนะนำ (4 การ์ด + รูปจริง + รีวิว + ราคา)
-- [ ] คอร์สเรียนแนะนำ (4 การ์ด + รูปจากเว็บเดิม)
-- [ ] "ทำงานอย่างไร" 3 ขั้นตอน
-- [ ] Testimonials (3 รีวิว + ดาวทอง)
-- [ ] CTA Banner "เป็นติวเตอร์กับเรา"
-- [ ] FAQ Section (JSON-LD สำหรับ SEO)
+### 3.1 Layout + Shared Components (🎨 Frontend Dev + 👑 Lead)
+**skills:** `/nextjs-app-router-patterns` `/shadcn` `/tailwind-patterns`
 
-### 3.3 หน้ารายการติวเตอร์ (`/tutors`)
-- [ ] Subject category grid (9 หมวด + icon)
-- [ ] Link ไปแต่ละหมวดวิชา
-- [ ] SEO metadata + JSON-LD (ItemList)
+- [ ] 👑 Root `app/layout.tsx` — fonts, providers (TanStack Query, Toast), site metadata
+- [ ] 🎨 `components/public/navbar.tsx` (Logo, menu, CTA)
+- [ ] 🎨 `components/public/mobile-nav.tsx` (hamburger)
+- [ ] 🎨 `components/public/footer.tsx` (4 คอลัมน์ + social)
+- [ ] 🎨 `components/public/breadcrumb.tsx`
+- [ ] 🎨 `components/public/sticky-cta.tsx` (LINE/Call floating)
+- [ ] 🎨 `components/public/tutor-card.tsx` (reusable — รูป + รีวิว + ราคา + วิชา)
+- [ ] 🎨 `components/public/subject-card.tsx`
+- [ ] 🎨 `components/public/article-card.tsx`
+- [ ] 🔍 QA accessibility — `/fixing-accessibility`
+- [ ] 👑 commit + push — `feat(ui): root layout + shared public components`
 
-### 3.4 หน้าหมวดวิชา (`/subject/[category]` + `/subject/[category]/[sub]`)
-- [ ] Banner หมวดวิชา
-- [ ] Filter sidebar (ราคา, คะแนนรีวิว, ประสบการณ์, พื้นที่)
-- [ ] Tutor cards grid (พร้อมข้อมูลครบ)
-- [ ] Pagination
-- [ ] SEO metadata + JSON-LD
-- [ ] Breadcrumb
+### 3.2 หน้าแรก `/` (🎨 Frontend Dev + 📈 SEO)
+**skills:** `/nextjs-best-practices` `/frontend-design` `/form-cro`
 
-### 3.5 หน้าโปรไฟล์ติวเตอร์ (`/tutor/[slug]`)
-- [ ] Hero (รูปใหญ่ + ข้อมูลหลัก + คะแนนรีวิว + Badge)
-- [ ] Tab navigation (เกี่ยวกับ / ประสบการณ์ / รีวิว / คอร์ส)
-- [ ] ข้อมูลการสอน (วิชา, แนวการสอน, ตารางเวลา)
-- [ ] ระบบรีวิวแบบ Shopee:
-  - [ ] คะแนนเฉลี่ย + กราฟแจกแจง
-  - [ ] รายการรีวิว (ดาว + ข้อความ + รูป)
-  - [ ] Admin ตอบกลับรีวิว
-- [ ] Sticky CTA Bar (mobile)
-- [ ] ฟอร์มติดต่อ / นัดเรียนทดลอง
-- [ ] ติวเตอร์คนอื่นในวิชาเดียวกัน (Related)
-- [ ] SEO metadata + JSON-LD (Person + AggregateRating + Review)
-- [ ] Breadcrumb
+- [ ] 🎨 Hero Section (bg image + overlay + Search Card + Stats bar)
+- [ ] 🎨 Partner/University logos bar (29 logos)
+- [ ] 🎨 หมวดวิชายอดนิยม (8 cards + icon)
+- [ ] 🎨 ติวเตอร์แนะนำ (4 cards + รีวิว + ราคา)
+- [ ] 🎨 คอร์สเรียนแนะนำ (4 cards)
+- [ ] 🎨 "ทำงานอย่างไร" 3 ขั้นตอน
+- [ ] 🎨 Testimonials (3 รีวิว + ดาวทอง)
+- [ ] 🎨 CTA Banner "เป็นติวเตอร์กับเรา"
+- [ ] 🎨 FAQ Section
+- [ ] 📈 `generateMetadata` (title: "หาครูสอนพิเศษ ติวเตอร์ตัวต่อตัว..." + keyword)
+- [ ] 📈 JSON-LD: `Organization` + `WebSite` + `SearchAction` + `LocalBusiness` + `FAQPage`
+- [ ] 🎨 Mobile version (≥ 390px)
+- [ ] 🔍 QA perf — `/web-performance-optimization` (LCP < 2.5s)
+- [ ] 👑 commit + push — `feat(home): homepage with hero search + stats + FAQ`
 
-### 3.6 หน้าหาครูสอนพิเศษ (`/find-tutor`) — Lead Capture
-- [ ] ฟอร์ม 2 ขั้นตอน:
-  - [ ] Step 1: วิชา + ระดับชั้น + พื้นที่
-  - [ ] Step 2: ชื่อ + เบอร์โทร (Email/Line optional)
-- [ ] แสดงผลติวเตอร์ที่เหมาะ (หลัง Step 1)
-- [ ] Loading state + Success page
-- [ ] ส่งแจ้งเตือน Line OA อัตโนมัติ
-- [ ] ส่ง email ยืนยัน (Resend)
-- [ ] บันทึก lead ลง database
+### 3.3 `/tutors/` (🎨 Frontend + ⚙️ Backend + 📈 SEO)
+- [ ] ⚙️ API `GET /api/subjects` — list categories
+- [ ] 🎨 Subject category grid (9 หมวด + icon)
+- [ ] 🎨 Link ไปแต่ละหมวดวิชา
+- [ ] 🎨 Breadcrumb
+- [ ] 📈 `generateMetadata` ("รายวิชาที่เปิดสอน...")
+- [ ] 📈 JSON-LD: `ItemList` (subjects) + `BreadcrumbList`
+- [ ] 👑 commit + push — `feat(tutors): subjects listing page`
 
-### 3.7 หน้าบทความ (`/blog`)
-- [ ] Blog listing page (grid + pagination + category filter)
-- [ ] Blog category page (`/blog/[category]`)
-- [ ] Blog detail page (`/blog/[slug]`)
-  - [ ] เนื้อหาบทความ (render จาก Tiptap JSON)
-  - [ ] Table of Contents (auto-generate จาก headings)
-  - [ ] Author info
-  - [ ] Related articles
-  - [ ] CTA "หาครูสอนพิเศษ" ในบทความ
-- [ ] SEO metadata + JSON-LD (Article)
-- [ ] Breadcrumb
+### 3.4 Subject category + sub `/subject/[category]/[sub]` (🎨 FE + ⚙️ BE + 📈 SEO)
+**skills:** `/nextjs-app-router-patterns` `/tanstack-query-expert`
 
-### 3.8 หน้าสมัครเป็นติวเตอร์
-- [ ] หน้าข้อมูล (`/join-with-us`) — สิทธิประโยชน์, ขั้นตอน, FAQ
-- [ ] ฟอร์มสมัคร (`/tutor-register`) — 3 ขั้นตอน:
-  - [ ] Step 1: ข้อมูลพื้นฐาน (ชื่อ, เบอร์, email, อาชีพ)
-  - [ ] Step 2: ข้อมูลการสอน (วุฒิ, ประสบการณ์, วิชา, ราคา, พื้นที่)
-  - [ ] Step 3: เอกสาร (รูปโปรไฟล์, บัตรประชาชน, วุฒิการศึกษา)
-- [ ] Progress bar (Step 1/3, 2/3, 3/3)
-- [ ] Auto-save draft
-- [ ] Success page + email ยืนยัน
-- [ ] แจ้ง Line OA เมื่อมีติวเตอร์สมัครใหม่
+- [ ] ⚙️ API `GET /api/tutors?category=X&sub=Y&filters=...`
+- [ ] 🎨 Banner หมวดวิชา
+- [ ] 🎨 **Filter sidebar** (ราคา, ประสบการณ์, พื้นที่, rating) — แก้ปัญหา UX เดิม
+- [ ] 🎨 Tutor cards grid (รูป + ดาว + ราคา + วิชา + ปุ่ม LINE/โทร)
+- [ ] 🎨 Pagination (URL-based `?page=2`)
+- [ ] 🎨 Sort: relevance / rating / price / newest
+- [ ] 🎨 Breadcrumb
+- [ ] 📈 `generateMetadata` (ตาม category/sub + location keyword)
+- [ ] 📈 JSON-LD: `ItemList` + `BreadcrumbList`
+- [ ] 🔍 QA — `/code-reviewer` `/web-performance-optimization`
+- [ ] 👑 commit + push — `feat(subject): category pages with filter + pagination`
 
-### 3.9 หน้ารีวิว (`/review`)
-- [ ] ฟอร์มเขียนรีวิว (ชื่อ, ดาว 1-5, ข้อความ, อัปโหลดรูป 1-5 รูป)
-- [ ] เลือกติวเตอร์ที่จะรีวิว
-- [ ] Success page
+### 3.5 Tutor Profile `/tutor/[slug]` (🎨 FE + ⚙️ BE + 📈 SEO)
+**skills:** `/frontend-design` (หน้าสำคัญสุดสำหรับ lead conversion)
+
+- [ ] ⚙️ API `GET /api/tutors/[slug]` (+ reviews aggregate)
+- [ ] 🎨 Hero (รูปใหญ่ + ข้อมูลหลัก + คะแนนรีวิว + verified badge)
+- [ ] 🎨 Tab navigation (เกี่ยวกับ / ประสบการณ์ / รีวิว / คอร์ส)
+- [ ] 🎨 ข้อมูลการสอน (วิชา, แนวการสอน, ตารางเวลา)
+- [ ] 🎨 ระบบรีวิวแบบ Shopee:
+  - [ ] 🎨 คะแนนเฉลี่ย + bar chart แจกแจง
+  - [ ] 🎨 รายการรีวิว (ดาว + ข้อความ + รูป)
+  - [ ] 🎨 Admin reply แสดง
+- [ ] 🎨 Sticky CTA Bar (mobile) — LINE + โทร
+- [ ] 🎨 ฟอร์มนัดเรียนทดลอง
+- [ ] 🎨 Related tutors (วิชาเดียวกัน)
+- [ ] 🎨 Mobile version
+- [ ] 📈 `generateMetadata` (title: "ติวเตอร์ [ชื่อ] สอน [วิชา] ในพื้นที่ [จังหวัด]")
+- [ ] 📈 JSON-LD: `Person` + `AggregateRating` + `Review` (เยอะหลาย reviews) + `BreadcrumbList`
+- [ ] 🔍 QA — full review
+- [ ] 👑 commit + push — `feat(tutor): tutor profile with Shopee-style reviews`
+
+### 3.6 `/find-tutor/` — **Lead Capture สำคัญสุด** (🎨 FE + ⚙️ BE + 📈 SEO)
+**skills:** `/form-cro` `/zod-validation-expert`
+
+- [ ] ⚙️ API `POST /api/leads` (+ Zod validation + rate limit)
+- [ ] ⚙️ Line OA notify hook (fire on new lead)
+- [ ] ⚙️ Email confirm via Resend
+- [ ] 🎨 Step 1: วิชา + ระดับชั้น + พื้นที่
+- [ ] 🎨 Step 2: ชื่อ + เบอร์โทร (Email/Line optional)
+- [ ] 🎨 แสดงผลติวเตอร์ที่เหมาะหลัง Step 1 (Value Before Ask)
+- [ ] 🎨 Progress bar
+- [ ] 🎨 Loading state + Success page
+- [ ] 🎨 Analytics events (step complete, submit)
+- [ ] 📈 `generateMetadata`
+- [ ] 📈 JSON-LD: `BreadcrumbList`
+- [ ] 🔍 QA — `/form-cro` audit + security `/api-security-best-practices`
+- [ ] 👑 commit + push — `feat(find-tutor): 2-step lead form + LINE notify`
+
+### 3.7 Blog (🎨 FE + ⚙️ BE + 📈 SEO)
+**skills:** `/seo-structure-architect` `/blog-writing-guide`
+
+- [ ] ⚙️ API `GET /api/articles?category=&page=`
+- [ ] ⚙️ API `GET /api/articles/[slug]`
+- [ ] 🎨 `/blog/` listing (grid 3 cols + sidebar + pagination)
+- [ ] 🎨 `/blog/[category]/`
+- [ ] 🎨 `/blog/[slug]/`:
+  - [ ] 🎨 Render Tiptap JSON → HTML
+  - [ ] 🎨 Auto Table of Contents (จาก H2/H3)
+  - [ ] 🎨 Author info
+  - [ ] 🎨 Related articles
+  - [ ] 🎨 In-content CTA + sidebar CTA "หาครูสอนพิเศษ"
+- [ ] 📈 `generateMetadata` (จาก article SEO fields)
+- [ ] 📈 JSON-LD: `Article` + `BreadcrumbList`
+- [ ] 📈 Handle 301 redirects สำหรับ blog URLs เก่า (จาก audit) — เพิ่มใน `next.config.ts`
+- [ ] 🔍 QA — Article schema validation
+- [ ] 👑 commit + push — `feat(blog): listing + category + detail pages`
+
+### 3.8 `/join-with-us/` + `/tutor-register/` (🎨 FE + ⚙️ BE + 📈 SEO)
+**skills:** `/signup-flow-cro`
+
+- [ ] 🎨 `/join-with-us/` — Hero + 4 Benefits + Stats + CTA + FAQ
+- [ ] ⚙️ API `POST /api/tutors/register` (pending status)
+- [ ] 🎨 `/tutor-register/` 3-step:
+  - [ ] 🎨 Step 1: ข้อมูลพื้นฐาน
+  - [ ] 🎨 Step 2: ข้อมูลการสอน
+  - [ ] 🎨 Step 3: เอกสาร (upload to Cloudinary + Supabase Storage)
+- [ ] 🎨 Auto-save draft (localStorage)
+- [ ] ⚙️ Email confirm + Line OA notify admin
+- [ ] 📈 `generateMetadata` + `BreadcrumbList`
+- [ ] 🔍 QA — `/signup-flow-cro`
+- [ ] 👑 commit + push — `feat(tutor-register): 3-step registration with docs upload`
+
+### 3.9 `/review/` (🎨 FE + ⚙️ BE + 📈 SEO)
+- [ ] ⚙️ API `POST /api/reviews` (pending status)
+- [ ] 🎨 ฟอร์มเขียนรีวิว (ชื่อ + ดาว + ข้อความ + upload รูป 1-5)
+- [ ] 🎨 เลือกติวเตอร์ (combobox with search)
+- [ ] 🎨 Success page
+- [ ] 📈 `generateMetadata`
+- [ ] 👑 commit + push — `feat(review): submit review form`
 
 ---
 
 ## Phase 4: พัฒนาระบบหลังบ้าน (Admin)
 
-### 4.1 Admin Layout
-- [ ] Sidebar navigation (Dashboard, ติวเตอร์, บทความ, Lead, รีวิว, ตั้งค่า)
-- [ ] Header (ชื่อ admin, logout)
-- [ ] Auth guard (redirect ถ้าไม่ login)
-- [ ] Role-based menu (ซ่อนเมนูตาม role)
+### 4.1 Admin Layout (🛠️ Admin Dev)
+**skills:** `/auth-implementation-patterns`
 
-### 4.2 Dashboard (`/admin/dashboard`)
-- [ ] Stats cards (ติวเตอร์, lead, บทความ, รีวิว)
-- [ ] กราฟ lead ย้อนหลัง 30 วัน
-- [ ] รายการ lead ล่าสุด 5 รายการ
-- [ ] รีวิวใหม่ที่รอตรวจสอบ
+- [ ] 🛠️ `/admin/layout.tsx` — sidebar + header
+- [ ] 🛠️ `components/admin/sidebar.tsx` (Dashboard/ติวเตอร์/บทความ/Lead/รีวิว/ตั้งค่า)
+- [ ] 🛠️ `components/admin/header.tsx` (ชื่อ admin + logout)
+- [ ] 🛠️ Auth guard (redirect if not logged in)
+- [ ] 🛠️ Role-based menu
+- [ ] 👑 commit + push — `feat(admin): layout + sidebar + auth guard`
 
-### 4.3 จัดการติวเตอร์ (`/admin/tutors`)
-- [ ] รายการติวเตอร์ (ตาราง + search + filter สถานะ)
-- [ ] เพิ่มติวเตอร์ใหม่ (`/admin/tutors/new`)
-- [ ] แก้ไขติวเตอร์ (`/admin/tutors/[id]/edit`)
-- [ ] อัปโหลดรูปโปรไฟล์ + เอกสาร (Cloudinary)
-- [ ] กำหนดวิชาที่สอน (multi-select)
-- [ ] เปลี่ยนสถานะ (pending/approved/rejected/inactive)
-- [ ] ทำเครื่องหมาย "ยอดนิยม"
-- [ ] ลบ/ซ่อนติวเตอร์
+### 4.2 Admin Dashboard (🛠️ Admin Dev)
+**skills:** `/tanstack-query-expert`
 
-### 4.4 จัดการบทความ CMS (`/admin/articles`)
-- [ ] รายการบทความ (ตาราง + filter สถานะ draft/published)
-- [ ] เขียนบทความใหม่ (`/admin/articles/new`)
-  - [ ] Tiptap WYSIWYG editor
-  - [ ] อัปโหลดรูปในบทความ
-  - [ ] Featured image
-  - [ ] หมวดหมู่ + tags
-  - [ ] SEO fields (title, description, keywords)
-  - [ ] สถานะ draft/published
-  - [ ] กำหนดวันเผยแพร่
-- [ ] แก้ไขบทความ (`/admin/articles/[id]/edit`)
-- [ ] Preview บทความก่อนเผยแพร่
-- [ ] ลบบทความ
+- [ ] ⚙️ API `GET /api/admin/stats`
+- [ ] 🛠️ Stats cards (ติวเตอร์/lead/บทความ/รีวิว)
+- [ ] 🛠️ กราฟ lead ย้อนหลัง 30 วัน (recharts)
+- [ ] 🛠️ รายการ lead ล่าสุด 5 รายการ
+- [ ] 🛠️ รีวิวใหม่ที่รอตรวจสอบ
+- [ ] 👑 commit + push — `feat(admin): dashboard with stats + charts`
 
-### 4.5 จัดการ Lead (`/admin/leads`)
-- [ ] รายการ lead ทั้งหมด (ตาราง + search + filter)
-- [ ] Filter ตามสถานะ (new/contacted/matched/closed)
-- [ ] Filter ตามวิชา, วันที่
-- [ ] ดูรายละเอียด lead
-- [ ] เปลี่ยนสถานะ lead
-- [ ] บันทึกโน้ตต่อ lead
-- [ ] Export lead เป็น CSV
+### 4.3 จัดการติวเตอร์ `/admin/tutors` (🛠️ Admin Dev + ⚙️ BE)
+- [ ] ⚙️ API `GET/POST/PATCH/DELETE /api/admin/tutors`
+- [ ] 🛠️ รายการติวเตอร์ (table + search + filter สถานะ + pagination)
+- [ ] 🛠️ `/admin/tutors/new` — form สร้าง
+- [ ] 🛠️ `/admin/tutors/[id]/edit` — form แก้ไข
+- [ ] 🛠️ อัปโหลดรูปโปรไฟล์ + เอกสาร
+- [ ] 🛠️ Multi-select วิชา
+- [ ] 🛠️ เปลี่ยนสถานะ (pending/approved/rejected/inactive)
+- [ ] 🛠️ Toggle "ยอดนิยม"
+- [ ] 🛠️ SEO fields (seo_title, seo_description, og_image)
+- [ ] 🔍 QA
+- [ ] 👑 commit + push — `feat(admin): tutor CRUD management`
 
-### 4.6 จัดการรีวิว (`/admin/reviews`)
-- [ ] รายการรีวิวทั้งหมด (ตาราง + filter)
-- [ ] Filter ตามสถานะ (รอตรวจสอบ/อนุมัติ/ซ่อน)
-- [ ] อนุมัติ/ซ่อนรีวิว
-- [ ] ตอบกลับรีวิว (admin reply)
+### 4.4 จัดการบทความ CMS `/admin/articles` (🛠️ Admin Dev + ⚙️ BE)
+**skills:** `/file-uploads`
 
-### 4.7 ตั้งค่าระบบ (`/admin/settings`)
-- [ ] จัดการผู้ใช้ (เพิ่ม/ลบ admin, editor)
-- [ ] กำหนด role (super_admin เท่านั้น)
-- [ ] ตั้งค่าทั่วไป (ชื่อเว็บ, เบอร์โทร, Line ID)
+- [ ] ⚙️ API CRUD articles
+- [ ] 🛠️ รายการบทความ (table + filter status)
+- [ ] 🛠️ `/admin/articles/new`:
+  - [ ] 🛠️ Tiptap editor (headings, bold, lists, image, link, embed)
+  - [ ] 🛠️ Upload รูปในบทความ (Cloudinary)
+  - [ ] 🛠️ Featured image
+  - [ ] 🛠️ หมวดหมู่ + tags
+  - [ ] 🛠️ SEO fields (title, description, keywords, og_image)
+  - [ ] 🛠️ Status draft/published + scheduled publish date
+- [ ] 🛠️ Preview บทความก่อนเผยแพร่
+- [ ] 🛠️ Duplicate article
+- [ ] 🛠️ ลบบทความ (soft delete)
+- [ ] 👑 commit + push — `feat(admin): article CMS with Tiptap + SEO`
+
+### 4.5 จัดการ Lead `/admin/leads` (🛠️ Admin Dev + ⚙️ BE)
+- [ ] ⚙️ API `GET /api/admin/leads` + `PATCH /api/admin/leads/[id]`
+- [ ] 🛠️ Table + tabs (ทั้งหมด/ใหม่/ติดต่อ/จับคู่/ปิด)
+- [ ] 🛠️ Search + filter (วิชา, วันที่)
+- [ ] 🛠️ ดูรายละเอียด lead (drawer)
+- [ ] 🛠️ เปลี่ยนสถานะ + บันทึกโน้ต
+- [ ] 🛠️ Export CSV
+- [ ] 👑 commit + push — `feat(admin): lead management + CSV export`
+
+### 4.6 จัดการรีวิว `/admin/reviews` (🛠️ Admin Dev + ⚙️ BE)
+- [ ] ⚙️ API CRUD reviews
+- [ ] 🛠️ Table + filter (รอตรวจ/อนุมัติ/ซ่อน)
+- [ ] 🛠️ อนุมัติ/ซ่อนรีวิว
+- [ ] 🛠️ Admin reply
+- [ ] 👑 commit + push — `feat(admin): review moderation`
+
+### 4.7 ตั้งค่าระบบ `/admin/settings` (🛠️ Admin Dev + ⚙️ BE)
+- [ ] ⚙️ API admin users
+- [ ] 🛠️ จัดการ users (super_admin เท่านั้น)
+- [ ] 🛠️ ตั้งค่าทั่วไป (ชื่อเว็บ, เบอร์, Line ID, social)
+- [ ] 👑 commit + push — `feat(admin): settings + user management`
 
 ---
 
-## Phase 5: SEO & Performance
+## Phase 5: SEO Content + Programmatic
 
-### 5.1 SEO Technical
-- [ ] Dynamic metadata ทุกหน้า (`generateMetadata`)
-- [ ] Open Graph + Twitter Cards ทุกหน้า
-- [ ] Canonical URLs
-- [ ] XML Sitemap (`/sitemap.xml`) — auto-generate
-- [ ] Robots.txt
-- [ ] 301 Redirects จาก URL เดิม (ถ้า URL เปลี่ยน)
+**หมายเหตุ:** Technical SEO (metadata, JSON-LD, sitemap, schema) ทำใน Phase 2-3 แล้ว — Phase นี้เน้น **content** + **programmatic expansion**
 
-### 5.2 Schema Markup (JSON-LD)
-- [ ] Organization (หน้าแรก)
-- [ ] WebSite + SearchAction (หน้าแรก)
-- [ ] BreadcrumbList (ทุกหน้า)
-- [ ] Person + AggregateRating + Review (หน้าโปรไฟล์ติวเตอร์)
-- [ ] Article (หน้าบทความ)
-- [ ] FAQPage (หน้าที่มี FAQ)
-- [ ] Course (หน้าคอร์ส)
-- [ ] LocalBusiness (หน้าแรก)
+### 5.1 Content Audit (📈 SEO)
+**skills:** `/seo-content-auditor` `/seo-keyword-strategist`
 
-### 5.3 Programmatic SEO
-- [ ] สร้างหน้า วิชา x จังหวัด อัตโนมัติ (`/subject/english/bangkok`)
-- [ ] สร้างหน้า วิชา x รูปแบบ (`/subject/english/online`)
-- [ ] Dynamic meta title/description ตาม pattern
-- [ ] Internal linking อัตโนมัติ (วิชา ↔ ติวเตอร์ ↔ บทความ)
+- [ ] 📈 ตรวจสอบ title + description ทุกหน้าเทียบ keyword target
+- [ ] 📈 ตรวจ internal linking (crawl ด้วย script)
+- [ ] 📈 ตรวจ image alt text ครบ
+- [ ] 📈 ตรวจ Core Web Vitals (Lighthouse score > 90)
+- [ ] 📈 Rich Results Test ทุกประเภทหน้า
 
-### 5.4 Performance
-- [ ] Next.js Image optimization ทุกรูป
-- [ ] Lazy loading สำหรับรูปที่อยู่ below-the-fold
-- [ ] Skeleton loading screens
-- [ ] ISR (Incremental Static Regeneration) สำหรับหน้าติวเตอร์/บทความ
-- [ ] ตรวจสอบ Core Web Vitals (LCP, FID, CLS)
-- [ ] Bundle size optimization
+### 5.2 Programmatic SEO (📈 SEO + 🎨 FE)
+**skills:** `/programmatic-seo`
+
+- [ ] 📈 วิชา × จังหวัด — `/subject/english/bangkok/` (77 จังหวัด × 26 วิชา = ~2,000 หน้า)
+- [ ] 📈 วิชา × รูปแบบ — `/subject/english/online/`, `/subject/english/at-home/`
+- [ ] 📈 Dynamic title/description pattern
+- [ ] 📈 Internal linking อัตโนมัติ
+- [ ] 📈 Canonical ป้องกัน duplicate
+- [ ] 📈 Add ใน sitemap
+- [ ] 🔍 QA — spot check 20 หน้า
+- [ ] 👑 commit + push — `feat(seo): programmatic pages (subject × province/format)`
+
+### 5.3 Content Writing (📈 SEO)
+**skills:** `/seo-content-writer` `/seo-content-planner` `/blog-writing-guide`
+
+- [ ] 📈 Keyword research (เชื่อม Google Search Console + Ahrefs ถ้ามี)
+- [ ] 📈 Content calendar 3 เดือน (40+ บทความ เพิ่มจาก 12 ที่มี)
+- [ ] 📈 Migrate บทความเดิม 12 ตัว + rewrite SEO fields ให้ดี
+- [ ] 📈 เขียนบทความใหม่ 10 บทความแรก:
+  - [ ] 📈 "ติวเตอร์ภาษาอังกฤษ [จังหวัดใหญ่]"
+  - [ ] 📈 "วิธีเลือกครูสอนพิเศษสำหรับ [ช่วงวัย]"
+  - [ ] 📈 "เตรียมสอบ [TGAT/TPAT/A-Level/O-NET]"
+  - [ ] 📈 "เรียนออนไลน์ vs เรียนที่บ้าน"
+  - [ ] 📈 "ติว GED / IELTS / TOEIC"
+  - [ ] 📈 "ติวเตอร์ [วิชา] สำหรับ [ระดับชั้น]"
 
 ---
 
 ## Phase 6: Integration & Notification
 
-### 6.1 Line OA Integration
-- [ ] แจ้งเตือนเมื่อมี lead ใหม่ (Push Message)
-- [ ] แจ้งเตือนเมื่อมีติวเตอร์สมัครใหม่
-- [ ] แจ้งเตือนเมื่อมีรีวิวใหม่
-- [ ] Rich Message format (ชื่อ, วิชา, เบอร์โทร, จังหวัด)
+### 6.1 Line OA Integration (⚙️ Backend Dev)
+- [ ] ⚙️ แจ้งเตือน lead ใหม่ (Push Message)
+- [ ] ⚙️ แจ้งเตือนติวเตอร์สมัครใหม่
+- [ ] ⚙️ แจ้งเตือนรีวิวใหม่
+- [ ] ⚙️ Flex Message format (name, subject, phone, province)
+- [ ] 🔍 QA test messages
 
-### 6.2 Email (Resend)
-- [ ] Email ยืนยัน lead submission
-- [ ] Email ยืนยันสมัครติวเตอร์
-- [ ] Email template สวยงาม (HTML)
+### 6.2 Email (Resend) (⚙️ Backend Dev)
+- [ ] ⚙️ Email ยืนยัน lead
+- [ ] ⚙️ Email ยืนยันสมัครติวเตอร์
+- [ ] ⚙️ React Email templates (สวย + responsive)
 
-### 6.3 Analytics
-- [ ] ติดตั้ง Google Analytics (GA4)
-- [ ] ตั้งค่า Conversion tracking (form submit = conversion)
-- [ ] Event tracking (คลิกปุ่ม CTA, ดูโปรไฟล์ติวเตอร์)
+### 6.3 Analytics (🎨 Frontend Dev)
+- [ ] 🎨 Google Analytics 4
+- [ ] 🎨 Conversion tracking (form submit = conversion)
+- [ ] 🎨 Event tracking (CTA click, tutor profile view, form step complete)
+- [ ] 🎨 Migrate GA4 account จากลูกค้า
 
 ---
 
 ## Phase 7: Testing & Security
 
-### 7.1 Testing
-- [ ] Unit tests สำหรับ utility functions
-- [ ] Integration tests สำหรับ API routes
-- [ ] E2E tests สำหรับ critical flows:
-  - [ ] หาครูสอนพิเศษ (กรอกฟอร์ม → ส่ง lead)
-  - [ ] สมัครเป็นติวเตอร์ (กรอกฟอร์ม → ส่งข้อมูล)
-  - [ ] Admin login → จัดการติวเตอร์
-  - [ ] Admin เขียนบทความ → publish
+### 7.1 Testing (🔍 QA Reviewer)
+**skills:** `/testing-patterns` `/test-driven-development`
 
-### 7.2 Security
-- [ ] ทุก API route ตรวจสอบ Auth + Role
-- [ ] Input validation ด้วย Zod ทุกฟอร์ม
-- [ ] Rate limiting สำหรับ form submission
-- [ ] CSRF protection
-- [ ] XSS prevention (sanitize HTML content)
-- [ ] SQL injection protection (Prisma parameterized queries)
-- [ ] File upload validation (ขนาด, ประเภทไฟล์)
-- [ ] Environment variables ไม่ expose ใน client
+- [ ] 🔍 Unit tests (utils, Zod schemas, SEO helpers)
+- [ ] 🔍 Integration tests (API routes + Prisma)
+- [ ] 🔍 E2E critical flows:
+  - [ ] 🔍 หาครูสอนพิเศษ (ฟอร์ม → lead)
+  - [ ] 🔍 สมัครติวเตอร์ (3 steps → pending)
+  - [ ] 🔍 Admin login → จัดการติวเตอร์
+  - [ ] 🔍 Admin เขียนบทความ → publish → หน้า /blog/[slug] แสดง
+  - [ ] 🔍 Submit review → approve → แสดงใน tutor profile
+
+### 7.2 Security Audit (🔍 QA)
+**skills:** `/cc-skill-security-review` `/api-security-best-practices` `/find-bugs`
+
+- [ ] 🔍 ทุก API route auth + role check
+- [ ] 🔍 Zod validation ทุกฟอร์ม
+- [ ] 🔍 Rate limiting (Upstash Redis หรือ in-memory)
+- [ ] 🔍 CSRF protection
+- [ ] 🔍 XSS prevention (DOMPurify ใน Tiptap output)
+- [ ] 🔍 SQL injection (Prisma safe by default)
+- [ ] 🔍 File upload validation
+- [ ] 🔍 Env vars ไม่ leak to client
 
 ---
 
 ## Phase 8: Data Migration
 
-### 8.1 ดึงข้อมูลจากเว็บเดิม
-- [ ] ดาวน์โหลดรูปติวเตอร์ 65 คน
-- [ ] ดาวน์โหลด Logo + icons + banners
-- [ ] ดาวน์โหลดรูป partner logos 29 รูป
-- [ ] ดาวน์โหลดรูปคอร์ส 4 รูป
-- [ ] ดาวน์โหลดรูปบทความ
+### 8.1 ดึงข้อมูลจากเว็บเดิม (👑 Lead + ⚙️ BE)
+- [ ] 👑 Export WordPress DB (done ใน Phase 0)
+- [ ] ⚙️ เขียน migration script `prisma/migrations/from-wp.ts`
+- [ ] ⚙️ Parse WP data → Prisma models:
+  - [ ] ⚙️ Tutors (103 คน + SEO fields)
+  - [ ] ⚙️ Articles (12 ตัว + content + featured images)
+  - [ ] ⚙️ Categories (ตามที่เว็บเดิมใช้)
+- [ ] ⚙️ Upload images → Cloudinary (แปลง path)
+- [ ] ⚙️ Verify count + sample data
+- [ ] 🔍 QA spot-check 20 records
 
-### 8.2 นำเข้าข้อมูล
-- [ ] Import ข้อมูลติวเตอร์ ~103 คน
-- [ ] Import หมวดวิชา 9 หมวด + 26 วิชาย่อย
-- [ ] Import บทความ (ถ้ามี)
-- [ ] อัปโหลดรูปทั้งหมดขึ้น Cloudinary
-- [ ] ตรวจสอบข้อมูลหลัง import
+### 8.2 URL redirect verify (📈 SEO)
+- [ ] 📈 ตรวจ 301 redirects ครบตาม `seo-migration-audit.md`
+- [ ] 📈 Test ด้วย curl + Lighthouse
 
 ---
 
 ## Phase 9: Deploy & Launch
 
 ### 9.1 Pre-launch Checklist
-- [ ] ทดสอบทุกหน้าบน mobile + desktop
-- [ ] ตรวจสอบ SEO metadata ทุกหน้า
-- [ ] ตรวจสอบ Schema markup (Google Rich Results Test)
-- [ ] ตรวจสอบ performance (Lighthouse score > 90)
-- [ ] ตรวจสอบ accessibility (WCAG AA)
-- [ ] ทดสอบ form submission + Line OA notification
-- [ ] ทดสอบ Admin ทุก feature
-- [ ] สำรองข้อมูล WordPress เดิม
+- [ ] 🔍 ทดสอบทุกหน้า mobile + desktop
+- [ ] 📈 SEO metadata ครบทุกหน้า
+- [ ] 📈 Schema markup ผ่าน Google Rich Results Test ทุกประเภท
+- [ ] 🔍 Lighthouse > 90 (perf/a11y/SEO/best-practices)
+- [ ] 🔍 Accessibility WCAG AA
+- [ ] 🔍 Form submission + Line OA notification
+- [ ] 🔍 Admin CRUD ทุก feature
+- [ ] 👑 Backup WordPress เดิม (final snapshot)
 
-### 9.2 Deploy to Vercel
-- [ ] เชื่อม GitHub repo กับ Vercel
-- [ ] ตั้งค่า Environment Variables บน Vercel
-- [ ] ตั้งค่า Custom Domain (besttutorthailand.com)
-- [ ] ตั้งค่า SSL certificate
-- [ ] ทดสอบ production build
+### 9.2 Deploy to Vercel (👑 Lead)
+- [ ] 👑 Vercel project + GitHub integration
+- [ ] 👑 Environment variables
+- [ ] 👑 Custom domain `besttutorthailand.com`
+- [ ] 👑 SSL + DNS records
+- [ ] 👑 Production build test
 
-### 9.3 Post-launch
-- [ ] ตรวจสอบ Google Search Console (indexing)
-- [ ] Submit sitemap ไป Google
-- [ ] ตรวจสอบ 301 redirects ทำงานถูกต้อง
-- [ ] Monitor error logs (Vercel)
-- [ ] Monitor Core Web Vitals
-- [ ] เริ่มเขียนบทความ SEO (เป้าหมาย 50+ บทความ)
+### 9.3 Post-launch (👑 Lead + 📈 SEO)
+- [ ] 📈 Submit sitemap ไป Google Search Console
+- [ ] 📈 ขอ re-index หน้าหลัก
+- [ ] 📈 ตรวจ 301 redirects ผ่านจริง
+- [ ] 👑 Monitor Vercel logs (24-48 ชม.)
+- [ ] 👑 Monitor Core Web Vitals
+- [ ] 📈 เริ่มเขียนบทความ SEO (target 50+ ใน 3 เดือน)
+- [ ] 📈 Monitor keyword ranking ย้อนหลัง (Search Console ทุกสัปดาห์)
 
 ---
 
 ## สรุปความคืบหน้า
 
-| Phase | สถานะ | ความคืบหน้า |
-|---|---|---|
-| Phase 1: วางแผน | กำลังทำ | 95% (เหลือ Mobile + Admin design) |
-| Phase 2: Setup | ยังไม่เริ่ม | 0% |
-| Phase 3: Frontend | ยังไม่เริ่ม | 0% |
-| Phase 4: Admin | ยังไม่เริ่ม | 0% |
-| Phase 5: SEO | ยังไม่เริ่ม | 0% |
-| Phase 6: Integration | ยังไม่เริ่ม | 0% |
-| Phase 7: Testing | ยังไม่เริ่ม | 0% |
-| Phase 8: Migration | ยังไม่เริ่ม | 0% |
-| Phase 9: Deploy | ยังไม่เริ่ม | 0% |
+| Phase | Owner หลัก | สถานะ | ความคืบหน้า |
+|---|---|---|---|
+| Phase 0: Pre-dev Prep | 👑 Lead | ยังไม่เริ่ม | 0% (blocking) |
+| Phase 1: Design | 🎨 FE + 🛠️ AD | กำลังทำ | 95% (เหลือ Mobile + Admin designs + sticky CTA) |
+| Phase 2: Setup | 👑 Lead + ⚙️ BE + 📈 SEO | ยังไม่เริ่ม | 0% |
+| Phase 3: Frontend | 🎨 FE + ⚙️ BE + 📈 SEO | ยังไม่เริ่ม | 0% |
+| Phase 4: Admin | 🛠️ AD + ⚙️ BE | ยังไม่เริ่ม | 0% |
+| Phase 5: SEO Content | 📈 SEO | ยังไม่เริ่ม | 0% |
+| Phase 6: Integration | ⚙️ BE + 🎨 FE | ยังไม่เริ่ม | 0% |
+| Phase 7: Testing | 🔍 QA | ยังไม่เริ่ม | 0% |
+| Phase 8: Migration | 👑 Lead + ⚙️ BE | ยังไม่เริ่ม | 0% |
+| Phase 9: Deploy | 👑 Lead + 📈 SEO | ยังไม่เริ่ม | 0% |
+
+---
+
+## Dependencies & Parallel Plan
+
+```
+Phase 0 (blocking) → ต้องเสร็จก่อนทุกอย่าง (ขอข้อมูลลูกค้า)
+       ↓
+Phase 1 (Design) ─────┐
+       ↓              │ (Phase 1 Mobile + Admin designs รันขนานกับ Phase 2)
+Phase 2 (Setup) ──────┤
+ ├─ 2.1-2.2 Lead      │
+ ├─ 2.3-2.6 Backend   │
+ ├─ 2.7 SEO foundation│
+ └─ 2.8 QA testing setup
+       ↓
+Phase 3 (Frontend) + Phase 4 (Admin) — รันขนานได้ เมื่อ Backend ทำ schema + auth เสร็จ
+  ├─ Frontend (FE + BE API) — หน้า public
+  ├─ Admin (AD + BE API) — admin panel
+  └─ SEO ช่วย generateMetadata + JSON-LD ทุกหน้า
+       ↓
+Phase 5 (SEO Content) — หลัง Phase 3 เสร็จ (ต้องมี public pages ก่อน programmatic)
+Phase 6 (Integration) — หลัง Phase 3-4 (ต่อ Line + Email เข้า form submissions)
+Phase 7 (Testing) — เริ่มได้ตั้งแต่ Phase 2, เข้มข้นใน Phase 8
+Phase 8 (Migration) — หลัง Phase 4 (ต้อง Admin CRUD พร้อม)
+Phase 9 (Deploy) — เมื่อ Phase 7 pass
+```
+
+---
+
+## คำสั่งที่ Lead ใช้บ่อย
+
+```bash
+npm install
+npm run dev
+npx prisma generate
+npx prisma db push
+npx prisma studio
+npm run build
+npm run lint
+npm run test
+npm run test:e2e
+```
+
+---
+
+## Reference Documents
+
+- [`CLAUDE.md`](../CLAUDE.md) — โปรเจกต์ rules + Agent Team Workflow + SEO-First Rules
+- [`docs/ux-ui-analysis.md`](ux-ui-analysis.md) — UX/UI analysis
+- [`docs/site-structure-crawl.md`](site-structure-crawl.md) — โครงสร้างเว็บเดิม
+- [`docs/seo-migration-audit.md`](seo-migration-audit.md) — SEO audit + URL strategy + keywords
