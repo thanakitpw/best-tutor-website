@@ -7,7 +7,6 @@ import {
   SheetTitle,
   SheetDescription,
 } from "@/components/ui/sheet";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import type { AdminTutor, TutorStatus } from "@/types/admin";
 
@@ -113,7 +112,7 @@ export function TutorDetailDrawer({
               <DetailRow label="อาชีพ" value={tutor.occupation} />
               <DetailRow
                 label="ประสบการณ์สอน"
-                value={tutor.teachingExperience != null ? `${tutor.teachingExperience} ปี` : undefined}
+                value={tutor.teachingExperienceYears > 0 ? `${tutor.teachingExperienceYears} ปี` : undefined}
               />
               <DetailRow label="สไตล์การสอน" value={tutor.teachingStyle} />
             </div>

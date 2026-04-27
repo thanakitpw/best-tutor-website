@@ -36,7 +36,7 @@ export function AdminSidebar() {
           width={167}
           height={83}
           priority
-          className="h-10 w-auto"
+          className="h-auto w-32"
         />
         <span className="text-xs text-[#334155]">Admin Panel</span>
       </div>

@@ -23,7 +23,7 @@ export function Footer() {
                 alt="Best Tutor Thailand"
                 width={167}
                 height={83}
-                className="h-12 w-auto"
+                className="h-auto w-36"
               />
             </Link>
             <p className="text-xs font-medium text-[color:var(--color-muted)]">

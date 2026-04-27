@@ -53,7 +53,7 @@ export default function AdminLoginPage() {
             width={167}
             height={83}
             priority
-            className="h-14 w-auto mb-3"
+            className="mb-3 h-auto w-40"
           />
           <p className="text-sm text-[#334155]">ระบบจัดการหลังบ้าน</p>
         </div>

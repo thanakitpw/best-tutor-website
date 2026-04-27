@@ -2,16 +2,27 @@
 
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
-import { Plus, RefreshCw, Users } from "lucide-react";
+import { Loader2, Pencil, Plus, RefreshCw, Trash2, Users } from "lucide-react";
+import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { TutorDetailDrawer } from "@/components/admin/tutor-detail-drawer";
 import type {
   AdminTutor,
   AdminTutorsResponse,
+  ApiEnvelope,
   TutorStatus,
 } from "@/types/admin";
 
@@ -50,21 +61,25 @@ export default function AdminTutorsPage() {
   const [actionLoading, setActionLoading] = useState<string | null>(null);
   const [selectedTutor, setSelectedTutor] = useState<AdminTutor | null>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState<AdminTutor | null>(null);
+  const [deleting, setDeleting] = useState(false);
 
   const fetchTutors = useCallback(async () => {
     setLoading(true);
     try {
       const params = new URLSearchParams({
         page: String(page),
-        pageSize: String(PAGE_SIZE),
+        limit: String(PAGE_SIZE),
       });
       if (statusFilter !== "ALL") {
         params.set("status", statusFilter);
       }
       const res = await fetch(`/api/admin/tutors?${params.toString()}`);
       if (!res.ok) throw new Error("Failed to fetch tutors");
-      const json: AdminTutorsResponse = await res.json();
-      setData(json);
+      const env = (await res.json()) as ApiEnvelope<AdminTutorsResponse>;
+      if (env.ok) {
+        setData(env.data);
+      }
     } catch {
       // keep previous data on error
     } finally {
@@ -95,7 +110,7 @@ export default function AdminTutorsPage() {
         prev
           ? {
               ...prev,
-              tutors: prev.tutors.map((t) =>
+              items: prev.items.map((t) =>
                 t.id === id ? { ...t, status } : t
               ),
             }
@@ -117,7 +132,51 @@ export default function AdminTutorsPage() {
     setDrawerOpen(true);
   }
 
-  const tutors = data?.tutors ?? [];
+  function openDeleteDialog(tutor: AdminTutor) {
+    setDeleteTarget(tutor);
+  }
+
+  async function confirmDelete() {
+    if (!deleteTarget) return;
+    const target = deleteTarget;
+
+    setDeleting(true);
+    try {
+      const res = await fetch(`/api/admin/tutors/${target.id}`, {
+        method: "DELETE",
+      });
+      if (!res.ok) {
+        const data = (await res.json().catch(() => ({}))) as {
+          error?: string;
+        };
+        toast.error(data.error ?? "ลบติวเตอร์ไม่สำเร็จ กรุณาลองใหม่");
+        return;
+      }
+
+      // Remove from local state
+      setData((prev) =>
+        prev
+          ? {
+              ...prev,
+              total: Math.max(0, prev.total - 1),
+              items: prev.items.filter((t) => t.id !== target.id),
+            }
+          : prev,
+      );
+
+      // Close drawer if it was showing this tutor
+      setSelectedTutor((prev) => (prev?.id === target.id ? null : prev));
+
+      toast.success("ลบติวเตอร์เรียบร้อย");
+      setDeleteTarget(null);
+    } catch {
+      toast.error("เกิดข้อผิดพลาด กรุณาลองใหม่");
+    } finally {
+      setDeleting(false);
+    }
+  }
+
+  const tutors = data?.items ?? [];
   const totalPages = data?.totalPages ?? 1;
 
   return (
@@ -256,6 +315,7 @@ export default function AdminTutorsPage() {
                     tutor={tutor}
                     onStatusChange={handleStatusChange}
                     onViewDetail={openDetail}
+                    onDelete={openDeleteDialog}
                     actionLoading={actionLoading}
                   />
                 ))
@@ -304,6 +364,47 @@ export default function AdminTutorsPage() {
         onStatusChange={handleStatusChange}
         actionLoading={actionLoading}
       />
+
+      {/* Delete confirmation dialog */}
+      <AlertDialog
+        open={deleteTarget !== null}
+        onOpenChange={(open) => {
+          if (!open && !deleting) setDeleteTarget(null);
+        }}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>ลบติวเตอร์?</AlertDialogTitle>
+            <AlertDialogDescription>
+              {deleteTarget
+                ? `ข้อมูลติวเตอร์ "${
+                    deleteTarget.nickname ?? deleteTarget.firstName
+                  }" จะถูกลบถาวร และจะไม่แสดงในเว็บไซต์อีก ดำเนินการต่อ?`
+                : ""}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={deleting}>ยกเลิก</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={(e) => {
+                e.preventDefault();
+                confirmDelete();
+              }}
+              disabled={deleting}
+              className="bg-destructive text-white hover:bg-destructive/90 focus-visible:ring-destructive/20"
+            >
+              {deleting ? (
+                <>
+                  <Loader2 className="size-4 animate-spin" />
+                  กำลังลบ...
+                </>
+              ) : (
+                "ลบถาวร"
+              )}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
@@ -314,6 +415,7 @@ interface TutorRowProps {
   tutor: AdminTutor;
   onStatusChange: (id: string, status: TutorStatus) => Promise<void>;
   onViewDetail: (tutor: AdminTutor) => void;
+  onDelete: (tutor: AdminTutor) => void;
   actionLoading: string | null;
 }
 
@@ -321,6 +423,7 @@ function TutorRow({
   tutor,
   onStatusChange,
   onViewDetail,
+  onDelete,
   actionLoading,
 }: TutorRowProps) {
   const isLoading = actionLoading === tutor.id;
@@ -413,6 +516,27 @@ function TutorRow({
             onClick={() => onViewDetail(tutor)}
           >
             รายละเอียด
+          </Button>
+          <Button
+            asChild
+            size="xs"
+            variant="outline"
+            title="แก้ไข"
+          >
+            <Link href={`/admin/tutors/${tutor.id}/edit`}>
+              <Pencil className="size-3" />
+              แก้ไข
+            </Link>
+          </Button>
+          <Button
+            size="icon-xs"
+            variant="outline"
+            onClick={() => onDelete(tutor)}
+            title="ลบ"
+            aria-label="ลบติวเตอร์"
+            className="text-red-600 hover:bg-red-50 hover:text-red-700 border-red-200"
+          >
+            <Trash2 className="size-3" />
           </Button>
         </div>
       </td>
