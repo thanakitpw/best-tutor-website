@@ -75,7 +75,7 @@ export default function EditTutorPage() {
       {/* Header */}
       <div className="mb-8 flex items-center gap-3">
         <Button asChild variant="ghost" size="icon" className="shrink-0">
-          <Link href="/admin/tutors">
+          <Link href="/admin/tutors" aria-label="กลับไปหน้ารายการติวเตอร์">
             <ArrowLeft className="size-5" />
           </Link>
         </Button>

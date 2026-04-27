@@ -12,6 +12,8 @@ import { defineConfig, devices } from "@playwright/test";
  */
 export default defineConfig({
   testDir: "./e2e",
+  // 60s — Turbopack first-compile of admin pages can take 10–20s on cold cache.
+  timeout: 60_000,
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
@@ -26,17 +28,39 @@ export default defineConfig({
   },
 
   projects: [
+    // Public smoke tests — no auth needed.
     {
       name: "chromium",
       use: { ...devices["Desktop Chrome"] },
+      testIgnore: ["**/admin-*.spec.ts", "**/auth.setup.ts"],
     },
     {
       name: "firefox",
       use: { ...devices["Desktop Firefox"] },
+      testIgnore: ["**/admin-*.spec.ts", "**/auth.setup.ts"],
     },
     {
       name: "mobile-chrome",
       use: { ...devices["Pixel 5"] },
+      testIgnore: ["**/admin-*.spec.ts", "**/auth.setup.ts"],
+    },
+
+    // Auth bootstrap — runs once, persists cookies to e2e/.auth/admin.json.
+    {
+      name: "setup",
+      testMatch: /auth\.setup\.ts/,
+      use: { ...devices["Desktop Chrome"] },
+    },
+
+    // Admin suite — chromium only (stable visual baselines), reuses session.
+    {
+      name: "admin",
+      testMatch: /admin-.*\.spec\.ts/,
+      dependencies: ["setup"],
+      use: {
+        ...devices["Desktop Chrome"],
+        storageState: "e2e/.auth/admin.json",
+      },
     },
   ],
 
