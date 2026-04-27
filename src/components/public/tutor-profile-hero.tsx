@@ -4,12 +4,12 @@ import { GraduationCap, MessageCircle, Phone, ShieldCheck, Star } from "lucide-r
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { CONTACT_INFO } from "@/components/public/mock-data";
-import type { MockTutor } from "@/components/public/mock-data";
-import type { MockRatingStats } from "@/components/public/mock-reviews";
+import type { PublicTutor } from "@/lib/tutors/types";
+import type { RatingStats } from "@/components/public/mock-reviews";
 
 interface TutorProfileHeroProps {
-  tutor: MockTutor;
-  stats: MockRatingStats;
+  tutor: PublicTutor;
+  stats: RatingStats;
 }
 
 /**

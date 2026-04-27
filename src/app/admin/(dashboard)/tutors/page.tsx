@@ -18,6 +18,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { TutorBulkActions } from "@/components/admin/tutor-bulk-actions";
 import { TutorDetailDrawer } from "@/components/admin/tutor-detail-drawer";
 import type {
   AdminTutor,
@@ -199,6 +200,7 @@ export default function AdminTutorsPage() {
           </div>
         </div>
         <div className="flex items-center gap-2">
+          <TutorBulkActions onImportSuccess={fetchTutors} />
           <Button
             variant="outline"
             size="sm"
@@ -227,9 +229,13 @@ export default function AdminTutorsPage() {
         value={statusFilter}
         onValueChange={setStatusFilter}
       >
-        <TabsList className="h-9">
+        <TabsList className="h-9 bg-white border border-[#D1D5DB] p-0.5 gap-0.5">
           {STATUS_TABS.map((tab) => (
-            <TabsTrigger key={tab.value} value={tab.value} className="text-sm">
+            <TabsTrigger
+              key={tab.value}
+              value={tab.value}
+              className="h-8 px-4 text-sm font-medium text-[#64748b] data-[state=active]:bg-white data-[state=active]:text-[#046bd2] data-[state=active]:shadow-sm data-[state=active]:font-semibold rounded-md transition-all"
+            >
               {tab.label}
             </TabsTrigger>
           ))}
@@ -247,9 +253,6 @@ export default function AdminTutorsPage() {
                 </th>
                 <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-[#334155]/60 hidden md:table-cell">
                   วิชา
-                </th>
-                <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-[#334155]/60 hidden lg:table-cell">
-                  ราคา
                 </th>
                 <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-[#334155]/60 hidden lg:table-cell">
                   จังหวัด
@@ -285,9 +288,6 @@ export default function AdminTutorsPage() {
                     <td className="px-4 py-3 hidden lg:table-cell">
                       <Skeleton className="h-3 w-16" />
                     </td>
-                    <td className="px-4 py-3 hidden lg:table-cell">
-                      <Skeleton className="h-3 w-16" />
-                    </td>
                     <td className="px-4 py-3">
                       <Skeleton className="h-5 w-14 rounded-full" />
                     </td>
@@ -302,7 +302,7 @@ export default function AdminTutorsPage() {
               ) : tutors.length === 0 ? (
                 <tr>
                   <td
-                    colSpan={7}
+                    colSpan={6}
                     className="px-4 py-12 text-center text-sm text-[#334155]/50"
                   >
                     ไม่พบข้อมูลติวเตอร์
@@ -461,11 +461,6 @@ function TutorRow({
         <span className="text-[#334155] line-clamp-1 max-w-[140px]">
           {tutor.subjectsTaught ?? "—"}
         </span>
-      </td>
-
-      {/* ราคา */}
-      <td className="px-4 py-3 hidden lg:table-cell">
-        <span className="text-[#334155]">{tutor.ratePricing ?? "—"}</span>
       </td>
 
       {/* จังหวัด */}

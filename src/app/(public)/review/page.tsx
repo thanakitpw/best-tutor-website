@@ -3,7 +3,7 @@ import { PenLine, ShieldCheck, Sparkles } from "lucide-react";
 
 import { Breadcrumb } from "@/components/public/breadcrumb";
 import { ReviewForm } from "@/components/public/review-form";
-import { MOCK_FEATURED_TUTORS } from "@/components/public/mock-data";
+import { getFeaturedTutors } from "@/lib/tutors/public";
 import { JsonLd } from "@/lib/seo/json-ld-script";
 import { buildBreadcrumbSchema } from "@/lib/seo/json-ld";
 import { buildMetadata } from "@/lib/seo/metadata";
@@ -51,10 +51,8 @@ export default async function ReviewPage({ searchParams }: ReviewPageProps) {
 
   const breadcrumbSchema = buildBreadcrumbSchema([...BREADCRUMB_ITEMS]);
 
-  // TODO(phase-8): replace MOCK_FEATURED_TUTORS with a Prisma query returning
-  //   approved tutors (slug, nickname, firstName, subjects). Keep the shape
-  //   identical so the combobox doesn't need changes.
-  const tutors = MOCK_FEATURED_TUTORS;
+  // Loaded from Prisma — only APPROVED tutors are eligible for review.
+  const tutors = await getFeaturedTutors(50);
 
   return (
     <>

@@ -127,7 +127,7 @@ export default function TutorRegisterPage() {
                 <ul className="mt-2 space-y-1.5 text-xs leading-6 text-[color:var(--color-body)]">
                   <li>• เบอร์โทร + LINE ที่ติดต่อได้</li>
                   <li>• วุฒิการศึกษาหรือประวัติคร่าวๆ</li>
-                  <li>• วิชาที่ต้องการสอน + อัตราค่าสอน</li>
+                  <li>• วิชาที่ต้องการสอน</li>
                   <li>• สำเนาบัตรประชาชน / วุฒิ (ส่งภายหลังได้)</li>
                 </ul>
               </div>

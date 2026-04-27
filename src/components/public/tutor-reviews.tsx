@@ -30,15 +30,15 @@ import {
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 import type {
-  MockRatingStats,
-  MockReview,
+  RatingStats,
+  ReviewItem,
 } from "@/components/public/mock-reviews";
 
 interface TutorReviewsProps {
   tutorSlug: string;
   tutorDisplayName: string;
-  reviews: MockReview[];
-  stats: MockRatingStats;
+  reviews: ReviewItem[];
+  stats: RatingStats;
 }
 
 type FilterKey = "all" | "5" | "4" | "with-photos" | "with-reply";
@@ -277,7 +277,7 @@ export function TutorReviews({
 
 // ---- Sub-components --------------------------------------------------------
 
-function ReviewCard({ review }: { review: MockReview }) {
+function ReviewCard({ review }: { review: ReviewItem }) {
   const initials = review.reviewerName.replace(/^คุณ|^น้อง/, "").slice(0, 2);
   const dateLabel = formatThaiShortDate(review.createdAt);
 

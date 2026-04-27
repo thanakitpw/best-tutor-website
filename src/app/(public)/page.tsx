@@ -27,11 +27,10 @@ import {
   MOCK_FAQ_ITEMS,
   MOCK_FEATURED_ARTICLES,
   MOCK_FEATURED_COURSES,
-  MOCK_FEATURED_TUTORS,
   MOCK_PARTNER_LOGOS,
   MOCK_POPULAR_SUBJECTS,
-  MOCK_TESTIMONIALS,
 } from "@/components/public/mock-data";
+import { getFeaturedTutors, type PublicTutor } from "@/lib/tutors/public";
 import { JsonLd } from "@/lib/seo/json-ld-script";
 import {
   buildFaqSchema,
@@ -58,7 +57,9 @@ export const metadata: Metadata = buildMetadata({
   ],
 });
 
-export default function HomePage() {
+export default async function HomePage() {
+  const featuredTutors = await getFeaturedTutors(6);
+
   return (
     <>
       <JsonLd
@@ -72,8 +73,7 @@ export default function HomePage() {
       <HeroSection />
       <PopularSubjectsSection />
       <FeaturedCoursesSection />
-      <FeaturedTutorsSection />
-      <TestimonialsSection />
+      {featuredTutors.length > 0 && <FeaturedTutorsSection tutors={featuredTutors} />}
       <ArticlesSection />
       <PartnersSection />
       <AboutSection />
@@ -109,7 +109,7 @@ function HeroSection() {
             className="self-start bg-white/15 text-white backdrop-blur hover:bg-white/20"
           >
             <Sparkles className="size-3.5" />
-            ติวเตอร์ 500+ คนพร้อมสอน
+            ก่อตั้งปี 2561 · ลูกค้ากว่า 50,000 ราย
           </Badge>
           <h1 className="text-3xl font-bold leading-tight tracking-tight md:text-4xl lg:text-5xl">
             หาครูสอนพิเศษที่ใช่
@@ -240,12 +240,18 @@ function FeaturedCoursesSection() {
                 />
 
                 {/* Course title — large */}
-                <h3 className="relative line-clamp-2 pr-10 pt-6 text-xl font-bold leading-tight md:text-2xl">
+                <h3
+                  className="relative line-clamp-2 pr-10 pt-6 text-xl font-bold leading-tight text-white md:text-2xl"
+                  style={{ color: "#ffffff" }}
+                >
                   {course.title}
                 </h3>
 
                 {/* Duration badge bottom-left */}
-                <span className="relative inline-flex items-center gap-1.5 self-start rounded-full bg-white/15 px-3 py-1 text-xs font-semibold backdrop-blur">
+                <span
+                  className="relative inline-flex items-center gap-1.5 self-start rounded-full bg-white/15 px-3 py-1 text-xs font-semibold text-white backdrop-blur"
+                  style={{ color: "#ffffff" }}
+                >
                   <Clock aria-hidden className="size-3.5" />
                   {course.durationHours} ชั่วโมง
                 </span>
@@ -269,9 +275,7 @@ function FeaturedCoursesSection() {
 
 // ---- Section 4: Featured tutors (blue BG, circular avatars) --------------
 
-function FeaturedTutorsSection() {
-  // Match Paper order: วาวา, มิกะ, วิว, แจม, อลิซ, เนย (already in that order in mock-data)
-  const tutors = MOCK_FEATURED_TUTORS.slice(0, 6);
+function FeaturedTutorsSection({ tutors }: { tutors: readonly PublicTutor[] }) {
   return (
     <section
       aria-labelledby="featured-tutors-title"
@@ -325,70 +329,6 @@ function FeaturedTutorsSection() {
   );
 }
 
-// ---- Section 5: Testimonials ---------------------------------------------
-
-const TESTIMONIAL_ACCENTS = [
-  "#046BD2", // blue
-  "#FFB800", // gold
-  "#10B981", // green
-];
-
-function TestimonialsSection() {
-  return (
-    <section
-      aria-labelledby="testimonials-title"
-      className="bg-[color:var(--color-light-bg)]"
-    >
-      <div className="mx-auto w-full max-w-[1240px] px-4 py-16 md:px-6 md:py-20">
-        <SectionHeader
-          eyebrow="คู่มือ"
-          title="รีวิวจริงจากสถาบัน"
-          description="ประสบการณ์จริงจากผู้ที่เคยใช้บริการ Best Tutor Thailand"
-          centered
-          titleId="testimonials-title"
-        />
-        <div className="mt-10 grid gap-5 md:grid-cols-3">
-          {MOCK_TESTIMONIALS.map((review, index) => {
-            const accent = TESTIMONIAL_ACCENTS[index % TESTIMONIAL_ACCENTS.length];
-            return (
-              <figure
-                key={review.id}
-                className="relative flex flex-col gap-4 rounded-2xl border border-[color:var(--color-border)] bg-white p-6 shadow-sm"
-              >
-                <span
-                  aria-hidden
-                  className="block size-3 rounded-full"
-                  style={{ backgroundColor: accent }}
-                />
-                <div className="flex items-center gap-1">
-                  {Array.from({ length: review.rating }).map((_, i) => (
-                    <Star
-                      key={i}
-                      aria-hidden
-                      className="size-4 fill-[color:var(--color-cta)] text-[color:var(--color-cta)]"
-                    />
-                  ))}
-                </div>
-                <blockquote className="text-sm leading-6 text-[color:var(--color-body)]">
-                  “{review.quote}”
-                </blockquote>
-                <figcaption>
-                  <p className="text-sm font-semibold text-[color:var(--color-heading)]">
-                    {review.name}
-                  </p>
-                  <p className="text-xs text-[color:var(--color-muted)]">
-                    {review.role}
-                  </p>
-                </figcaption>
-              </figure>
-            );
-          })}
-        </div>
-      </div>
-    </section>
-  );
-}
-
 // ---- Section 6: Articles --------------------------------------------------
 
 function ArticlesSection() {
@@ -434,13 +374,13 @@ function PartnersSection() {
     >
       <div className="mx-auto w-full max-w-[1240px] px-4 py-16 text-center md:px-6 md:py-20">
         <p className="text-xs font-semibold uppercase tracking-[0.2em] text-white/70">
-          OUR CUSTOMERS
+          TRUSTED BY
         </p>
         <h2 className="mt-3 text-2xl font-bold tracking-tight text-white md:text-3xl">
-          BEST TUTOR THAILAND
+          องค์กรชั้นนำกว่า 100 แห่งไว้วางใจ
         </h2>
         <p className="mx-auto mt-3 max-w-2xl text-sm leading-6 text-white/75">
-          ติวเตอร์จากมหาวิทยาลัยชั้นนำของไทย ผ่านการคัดกรองคุณภาพก่อนเริ่มสอนจริงทุกคน
+          ติวเตอร์ของเรามาจากมหาวิทยาลัยชั้นนำทั่วประเทศ ผ่านการคัดกรองคุณภาพก่อนเริ่มสอนจริงทุกคน
         </p>
         <ul className="mx-auto mt-10 flex flex-wrap items-center justify-center gap-3">
           {MOCK_PARTNER_LOGOS.map((name) => (
@@ -508,10 +448,10 @@ function AboutSection() {
             เกี่ยวกับเรา
           </h2>
           <p className="max-w-3xl text-sm leading-7 text-[color:var(--color-body)] md:text-base">
-            Best Tutor Thailand รวบรวมติวเตอร์คุณภาพจากมหาวิทยาลัยชั้นนำทั่วประเทศ
-            พร้อมระบบคัดกรองที่เข้มงวด และได้รับการกล่าวถึงในรายการ Shark Tank Thailand
-            ในฐานะแพลตฟอร์มการศึกษาที่เติบโตอย่างรวดเร็ว
-            พร้อมช่วยคุณจับคู่ติวเตอร์ที่เหมาะสมในเวลาไม่เกิน 24 ชั่วโมง
+            Best Tutor Thailand ก่อตั้งปี 2561 รวบรวมติวเตอร์คุณภาพจากมหาวิทยาลัยชั้นนำทั่วประเทศ
+            ผ่านการคัดกรองที่เข้มงวดก่อนเริ่มสอนจริงทุกคน ไว้วางใจโดยลูกค้ากว่า 50,000 ราย
+            และองค์กรชั้นนำกว่า 100 แห่ง รวมถึงได้รับการกล่าวถึงในรายการ Shark Tank Thailand ปี 2566
+            พร้อมจับคู่ติวเตอร์ที่เหมาะสมภายใน 24 ชั่วโมง
           </p>
 
           <div className="flex flex-wrap items-center justify-center gap-4 pt-4 text-sm text-[color:var(--color-body)] md:text-base">

@@ -128,11 +128,6 @@ const step2Schema = z.object({
     .trim()
     .min(1, "กรุณาเลือกหรือระบุวิชาที่สอนอย่างน้อย 1 วิชา")
     .max(500, "วิชามากเกินไป"),
-  ratePricing: z
-    .string()
-    .trim()
-    .min(1, "กรุณาระบุอัตราค่าสอน")
-    .max(100, "ข้อความยาวเกินไป"),
   address: z
     .string()
     .trim()
@@ -248,7 +243,6 @@ export function TutorRegisterForm() {
       teachingExperienceYears: 0,
       teachingStyle: "",
       subjectsTaught: "",
-      ratePricing: "",
       address: "",
       vehicleType: "",
     },
@@ -288,7 +282,6 @@ export function TutorRegisterForm() {
         teachingExperienceYears: draft.step2.teachingExperienceYears ?? 0,
         teachingStyle: draft.step2.teachingStyle ?? "",
         subjectsTaught: draft.step2.subjectsTaught ?? "",
-        ratePricing: draft.step2.ratePricing ?? "",
         address: draft.step2.address ?? "",
         vehicleType: draft.step2.vehicleType ?? "",
       });
@@ -442,7 +435,6 @@ export function TutorRegisterForm() {
           ? { teachingStyle: s2Parsed.data.teachingStyle.trim() }
           : {}),
         subjectsTaught: s2Parsed.data.subjectsTaught,
-        ratePricing: s2Parsed.data.ratePricing,
         address: s2Parsed.data.address,
         ...(s2Parsed.data.vehicleType?.trim()
           ? { vehicleType: s2Parsed.data.vehicleType.trim() }
@@ -945,24 +937,6 @@ export function TutorRegisterForm() {
           </FormRow>
 
           <FormRow>
-            <Label htmlFor="ratePricing" className="text-sm font-semibold">
-              อัตราค่าสอน <RequiredStar />
-            </Label>
-            <Input
-              id="ratePricing"
-              type="text"
-              placeholder="เช่น 500 บาท/ชั่วโมง หรือ 800-1200 บาท ตามระดับชั้น"
-              className="h-11"
-              maxLength={100}
-              {...step2Form.register("ratePricing")}
-              aria-invalid={!!step2Form.formState.errors.ratePricing}
-            />
-            <FieldError
-              message={step2Form.formState.errors.ratePricing?.message}
-            />
-          </FormRow>
-
-          <FormRow>
             <Label htmlFor="address" className="text-sm font-semibold">
               ที่อยู่ / พื้นที่สะดวกเดินทาง <RequiredStar />
             </Label>
@@ -1290,7 +1264,6 @@ function applyFieldErrors(
     "teachingExperienceYears",
     "teachingStyle",
     "subjectsTaught",
-    "ratePricing",
     "address",
     "vehicleType",
   ];

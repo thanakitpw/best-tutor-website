@@ -55,7 +55,15 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 
 import { TutorCard } from "@/components/public/tutor-card";
-import { MOCK_FEATURED_TUTORS, CONTACT_INFO } from "@/components/public/mock-data";
+import { CONTACT_INFO } from "@/components/public/mock-data";
+import type { PublicTutor } from "@/lib/tutors/types";
+
+/**
+ * Placeholder until find-tutor wires real recommendations. The route is
+ * blocked behind the coming-soon flag in production, so it is not reachable
+ * by visitors — but we keep it compile-clean for the dev build.
+ */
+const RECOMMENDED_TUTORS_PLACEHOLDER: PublicTutor[] = [];
 import {
   FIND_TUTOR_AGE_GROUPS,
   FIND_TUTOR_CATEGORIES,
@@ -417,20 +425,9 @@ export function FindTutorForm({ initialValues }: FindTutorFormProps) {
   // want here — textarea accepts multi-line as expected, selects intercept
   // Enter themselves, inputs submit the parent form.
 
-  // --- Recommended tutors (mock filter; Phase 8 replaces with real query) --
-  const recommendedTutors = useMemo(() => {
-    if (!selectedCategory) return MOCK_FEATURED_TUTORS.slice(0, 5);
-    const keywords = [
-      selectedCategory.label,
-      ...(selectedCategory.subjects?.map((s) => s.label) ?? []),
-    ];
-    // Simple contains-match on any subject tag, fall back to featured order.
-    const matches = MOCK_FEATURED_TUTORS.filter((t) =>
-      t.subjects.some((s) => keywords.some((k) => s.includes(k) || k.includes(s))),
-    );
-    const pool = matches.length > 0 ? matches : MOCK_FEATURED_TUTORS;
-    return pool.slice(0, 5);
-  }, [selectedCategory]);
+  // --- Recommended tutors --------------------------------------------------
+  // Empty until /find-tutor unblocks and a real recommendation API ships.
+  const recommendedTutors = useMemo(() => RECOMMENDED_TUTORS_PLACEHOLDER, []);
 
   // Progress bar value by step
   const progressValue = step === "step1" ? 50 : step === "preview" ? 75 : 100;
@@ -925,7 +922,7 @@ function FieldError({ message }: { message?: string }) {
 
 interface PreviewStepProps {
   categoryLabel: string;
-  tutors: typeof MOCK_FEATURED_TUTORS;
+  tutors: readonly PublicTutor[];
   onBack: () => void;
   onContinue: () => void;
 }

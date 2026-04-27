@@ -19,7 +19,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { ReviewStarInput } from "@/components/public/review-star-input";
 import { ReviewImageUpload } from "@/components/public/review-image-upload";
-import { type MockTutor } from "@/components/public/mock-data";
+import { type PublicTutor } from "@/lib/tutors/types";
 import { cn } from "@/lib/utils";
 
 // ---- Schema ----------------------------------------------------------------
@@ -54,7 +54,7 @@ type ReviewFormValues = z.infer<typeof reviewFormSchema>;
 export interface ReviewFormProps {
   /** List of tutors to choose from — injected by the server page so the
    * combobox is hydrated immediately (no loading flash). */
-  tutors: readonly MockTutor[];
+  tutors: readonly PublicTutor[];
   /** Optional pre-selected tutor slug (from `?tutor=<slug>` query param). */
   prefillTutorSlug?: string;
 }
@@ -403,9 +403,9 @@ function FieldError({ message }: { message?: string }) {
 }
 
 function matchTutor(
-  tutors: readonly MockTutor[],
+  tutors: readonly PublicTutor[],
   slug: string | undefined,
-): MockTutor | undefined {
+): PublicTutor | undefined {
   if (!slug) return undefined;
   return tutors.find((t) => t.slug === slug);
 }
@@ -417,7 +417,7 @@ function matchTutor(
 // (avatar + name + subjects) that a plain <Select> can't show cleanly.
 //
 interface TutorComboboxProps {
-  tutors: readonly MockTutor[];
+  tutors: readonly PublicTutor[];
   value: string;
   onChange: (slug: string) => void;
   invalid?: boolean;
@@ -566,7 +566,7 @@ function TutorCombobox({
   );
 }
 
-function TutorInitialsAvatar({ tutor }: { tutor: MockTutor }) {
+function TutorInitialsAvatar({ tutor }: { tutor: PublicTutor }) {
   const initials = (
     tutor.nickname.replace(/^ครู/, "").trim() || tutor.firstName
   ).slice(0, 2);

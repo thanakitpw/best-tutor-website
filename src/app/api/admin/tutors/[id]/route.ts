@@ -58,6 +58,7 @@ const patchBodySchema = z
       .optional(),
     teachingStyle: z.string().trim().max(1000).optional(),
     teachingExperienceYears: z.number().int().min(0).max(80).optional(),
+    subjectSlugs: z.array(z.string()).optional(),
   })
   .refine(
     (data) =>
@@ -68,6 +69,7 @@ const patchBodySchema = z
       data.lastName !== undefined ||
       data.profileImageUrl !== undefined ||
       data.subjectsTaught !== undefined ||
+      data.subjectSlugs !== undefined ||
       data.address !== undefined ||
       data.education !== undefined ||
       data.teachingStyle !== undefined ||
@@ -94,6 +96,7 @@ export type AdminGetTutorResponse = {
   lastName: string;
   profileImageUrl: string | null;
   subjectsTaught: string | null;
+  subjectSlugs: string[];
   address: string | null;
   education: string | null;
   teachingStyle: string | null;
@@ -150,6 +153,9 @@ export async function GET(
         status: true,
         isPopular: true,
         createdAt: true,
+        tutorSubjects: {
+          select: { subject: { select: { slug: true } } },
+        },
       },
     });
 
@@ -157,8 +163,10 @@ export async function GET(
       return fail(404, "ไม่พบติวเตอร์ที่ระบุ");
     }
 
+    const { tutorSubjects, ...rest } = tutor;
     const response: AdminGetTutorResponse = {
-      ...tutor,
+      ...rest,
+      subjectSlugs: tutorSubjects.map((ts) => ts.subject.slug),
       createdAt: tutor.createdAt.toISOString(),
     };
 
@@ -214,6 +222,7 @@ export async function PATCH(
       lastName,
       profileImageUrl,
       subjectsTaught,
+      subjectSlugs,
       address,
       education,
       teachingStyle,
@@ -248,7 +257,33 @@ export async function PATCH(
       updateData.teachingExperienceYears = teachingExperienceYears;
     }
 
-    // --- Persist ---------------------------------------------------------------
+    // --- Handle subjectSlugs — sync junction table + update subjectsTaught ----
+    if (subjectSlugs !== undefined) {
+      const subjects = await prisma.subject.findMany({
+        where: { slug: { in: subjectSlugs } },
+        select: { id: true, name: true },
+      });
+      // Derive the human-readable string from looked-up names
+      updateData.subjectsTaught = subjects.map((s) => s.name).join(", ") || null;
+
+      // Replace junction rows inside a transaction
+      const updated = await prisma.$transaction(async (tx) => {
+        await tx.tutorSubject.deleteMany({ where: { tutorId: id } });
+        if (subjects.length > 0) {
+          await tx.tutorSubject.createMany({
+            data: subjects.map((s) => ({ tutorId: id, subjectId: s.id })),
+          });
+        }
+        return tx.tutor.update({
+          where: { id },
+          data: updateData,
+          select: { id: true, slug: true, status: true, isPopular: true },
+        });
+      });
+      return ok<AdminPatchTutorResponse>(updated);
+    }
+
+    // --- Persist (no subject change) ------------------------------------------
     const updated = await prisma.tutor.update({
       where: { id },
       data: updateData,

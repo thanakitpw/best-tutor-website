@@ -13,9 +13,9 @@ interface StatsBarProps {
 }
 
 const DEFAULT_ITEMS: readonly StatsBarItem[] = [
-  { value: "30,000+", label: "นักเรียน" },
+  { value: "50,000+", label: "ลูกค้าที่ไว้วางใจ" },
   { value: "500+", label: "ติวเตอร์คุณภาพ" },
-  { value: "4.8", label: "คะแนนเฉลี่ย" },
+  { value: "100+", label: "องค์กรคู่ค้า" },
 ];
 
 /**

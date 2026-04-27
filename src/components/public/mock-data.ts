@@ -45,115 +45,6 @@ export const MOCK_ALL_CATEGORIES: MockSubject[] = [
   { slug: "sport", name: "กีฬา", iconName: "Dumbbell", tutorCount: 16, tagline: "ว่ายน้ำ · เทควันโด · แบดมินตัน · โยคะ" },
 ];
 
-// ---- Tutors -----------------------------------------------------------------
-
-export interface MockTutor {
-  slug: string;
-  nickname: string;
-  firstName: string;
-  lastName: string;
-  profileImageUrl: string | null;
-  rating: number;
-  reviewCount: number;
-  ratePricing: number;
-  subjects: string[];
-  province: string | null;
-  education: string;
-  isPopular: boolean;
-}
-
-/** Placeholder photo — null means TutorCard renders a gradient avatar with
- * initials instead of fetching remote images (keeps build deterministic
- * before Cloudinary media is seeded). */
-const PLACEHOLDER_AVATAR = (): string | null => null;
-
-export const MOCK_FEATURED_TUTORS: MockTutor[] = [
-  {
-    slug: "kru-wawa-panisa",
-    nickname: "ครูวาวา",
-    firstName: "ปณิศา",
-    lastName: "เจริญสุข",
-    profileImageUrl: PLACEHOLDER_AVATAR(),
-    rating: 4.9,
-    reviewCount: 36,
-    ratePricing: 550,
-    subjects: ["ภาษาอังกฤษ", "IELTS", "TOEIC"],
-    province: "กรุงเทพมหานคร",
-    education: "จุฬาฯ คณะอักษรศาสตร์",
-    isPopular: true,
-  },
-  {
-    slug: "kru-mika-ratchanee",
-    nickname: "ครูมิกะ",
-    firstName: "รัชนี",
-    lastName: "ชัยสงคราม",
-    profileImageUrl: PLACEHOLDER_AVATAR(),
-    rating: 4.8,
-    reviewCount: 28,
-    ratePricing: 500,
-    subjects: ["ภาษาจีน", "HSK"],
-    province: "กรุงเทพมหานคร",
-    education: "ม.ปักกิ่ง ภาษาศาสตร์",
-    isPopular: true,
-  },
-  {
-    slug: "kru-view-thanakrit",
-    nickname: "ครูวิว",
-    firstName: "ธนกฤต",
-    lastName: "พงษ์วานิช",
-    profileImageUrl: PLACEHOLDER_AVATAR(),
-    rating: 4.9,
-    reviewCount: 42,
-    ratePricing: 600,
-    subjects: ["คณิตศาสตร์", "ฟิสิกส์"],
-    province: "นนทบุรี",
-    education: "จุฬาฯ คณะวิศวกรรมศาสตร์",
-    isPopular: false,
-  },
-  {
-    slug: "kru-jam-supanida",
-    nickname: "ครูแจม",
-    firstName: "สุพาณิดา",
-    lastName: "เจริญสุข",
-    profileImageUrl: PLACEHOLDER_AVATAR(),
-    rating: 4.7,
-    reviewCount: 19,
-    ratePricing: 450,
-    subjects: ["ชีววิทยา", "เคมี"],
-    province: "กรุงเทพมหานคร",
-    education: "มหิดล คณะแพทยศาสตร์",
-    isPopular: false,
-  },
-  {
-    slug: "kru-alice-chavalya",
-    nickname: "ครูอลิซ",
-    firstName: "ชวัลญา",
-    lastName: "รัตนวงศ์",
-    profileImageUrl: PLACEHOLDER_AVATAR(),
-    rating: 5.0,
-    reviewCount: 22,
-    ratePricing: 650,
-    subjects: ["ภาษาอังกฤษ", "SAT"],
-    province: "กรุงเทพมหานคร",
-    education: "ธรรมศาสตร์ คณะศิลปศาสตร์",
-    isPopular: true,
-  },
-  {
-    slug: "kru-ney-kanyarat",
-    nickname: "ครูเนย",
-    firstName: "กัญญรัตน์",
-    lastName: "สุขสบาย",
-    profileImageUrl: PLACEHOLDER_AVATAR(),
-    rating: 4.8,
-    reviewCount: 31,
-    ratePricing: 500,
-    subjects: ["ภาษาไทย", "สังคมศึกษา"],
-    province: "กรุงเทพมหานคร",
-    education: "จุฬาฯ คณะอักษรศาสตร์",
-    isPopular: false,
-  },
-];
-
 // ---- Courses ----------------------------------------------------------------
 
 export interface MockCourse {
@@ -260,43 +151,6 @@ export const MOCK_FEATURED_ARTICLES: MockArticle[] = [
   },
 ];
 
-// ---- Testimonials ---------------------------------------------------------
-
-export interface MockTestimonial {
-  id: string;
-  name: string;
-  role: string;
-  rating: number;
-  quote: string;
-}
-
-export const MOCK_TESTIMONIALS: MockTestimonial[] = [
-  {
-    id: "t1",
-    name: "คุณแม่สมศรี",
-    role: "ผู้ปกครองน้องฟิวส์ (ม.4)",
-    rating: 5,
-    quote:
-      "ลูกเรียนกับครูต้นอ้อ 3 เดือน เกรดคณิตขึ้นจาก C เป็น A พอใจมาก ครูใจเย็น อธิบายเข้าใจง่าย",
-  },
-  {
-    id: "t2",
-    name: "น้องมินนี่",
-    role: "นักเรียน ม.6 สอบ IELTS",
-    rating: 5,
-    quote:
-      "ครูวาวาช่วยติว IELTS ให้จนได้ 7.0 จากเดิม 5.5 ใน 4 เดือน ขอบคุณ Best Tutor ที่แนะนำครูเก่ง ๆ ให้ค่ะ",
-  },
-  {
-    id: "t3",
-    name: "คุณพ่อวรวิทย์",
-    role: "ผู้ปกครองน้องเมษา (ป.5)",
-    rating: 5,
-    quote:
-      "สะดวกมาก จับคู่ครูไวภายในวันเดียว ครูมาสอนถึงบ้าน ลูกชอบมาก เรียนภาษาจีนสนุกขึ้นเยอะ",
-  },
-];
-
 // ---- FAQ -------------------------------------------------------------------
 
 export interface MockFaqItem {
@@ -337,9 +191,19 @@ export const MOCK_PARTNER_LOGOS: string[] = [
   "ABAC",
   "KMITL",
   "มศว",
-  "SWU",
   "ม.ศิลปากร",
   "ม.ขอนแก่น",
+  "ม.เชียงใหม่",
+  "ม.สงขลา",
+  "ม.บูรพา",
+  "ม.รามคำแหง",
+  "ม.ศรีปทุม",
+  "ม.กรุงเทพ",
+  "ม.นเรศวร",
+  "ม.อัสสัมชัญ",
+  "สจล.",
+  "ม.ภาคตะวันออกเฉียงเหนือ",
+  "ม.อุบลราชธานี",
 ];
 
 // ---- Navigation links ------------------------------------------------------
@@ -357,14 +221,14 @@ export const MAIN_NAV_LINKS: NavLink[] = [
 ];
 
 export const CONTACT_INFO = {
-  phone: "02-000-0000",
-  phoneHref: "tel:+6620000000",
+  phone: "099-189-5222",
+  phoneHref: "tel:+66991895222",
   email: "contact@besttutorthailand.com",
   lineId: "@besttutor",
   lineHref: "https://lin.ee/jL50860",
   address: "กรุงเทพมหานคร ประเทศไทย",
-  workDays: "จันทร์-เสาร์ 9:00-18:00 น.",
-  facebook: "https://facebook.com/besttutorthailand",
-  instagram: "https://instagram.com/besttutor_th",
-  tiktok: "#",
+  workDays: "จ.-ศ. 9:30-20:30 น. | ส.-อา. 9:30-19:00 น.",
+  facebook: "https://www.facebook.com/besttutorthailand",
+  instagram: "https://www.instagram.com/besttutor_th",
+  tiktok: "https://www.tiktok.com/@besttutorthailand",
 } as const;

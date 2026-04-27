@@ -2,10 +2,10 @@ import Link from "next/link";
 import Image from "next/image";
 import { Star } from "lucide-react";
 
-import type { MockTutor } from "./mock-data";
+import type { PublicTutor } from "@/lib/tutors/types";
 
 interface FeaturedTutorAvatarProps {
-  tutor: MockTutor;
+  tutor: PublicTutor;
   /** Stars rating (1-5). Defaults to 5 to match the Paper hero row. */
   displayStars?: number;
 }

@@ -49,7 +49,6 @@ export type AdminTutorListItem = {
   email: string | null;
   phone: string | null;
   subjectsTaught: string | null;
-  ratePricing: string | null;
   address: string | null;
   status: TutorStatus;
   isPopular: boolean;
@@ -116,7 +115,6 @@ export async function GET(request: Request) {
           email: true,
           phone: true,
           subjectsTaught: true,
-          ratePricing: true,
           address: true,
           status: true,
           isPopular: true,
@@ -148,7 +146,9 @@ const createTutorSchema = z.object({
   firstName: z.string().trim().min(1, "กรุณากรอกชื่อจริง").max(100),
   lastName: z.string().trim().min(1, "กรุณากรอกนามสกุล").max(100),
   profileImageUrl: z.string().trim().url("URL รูปไม่ถูกต้อง").optional().or(z.literal("")),
-  subjectsTaught: z.string().trim().min(1, "กรุณากรอกวิชาที่สอน").max(500),
+  subjectSlugs: z
+    .array(z.string())
+    .min(1, "กรุณาเลือกวิชาที่สอนอย่างน้อย 1 วิชา"),
   address: z.string().trim().min(1, "กรุณากรอกจังหวัด").max(200),
   education: z.string().trim().min(1, "กรุณากรอกการศึกษา").max(500),
   teachingStyle: z.string().trim().max(1000).optional(),
@@ -174,6 +174,23 @@ export async function POST(request: Request) {
     if (!parsed.success) return failValidation(parsed.error, "ข้อมูลไม่ถูกต้อง");
     const input = parsed.data;
 
+    // --- Resolve subject slugs → subject rows ---------------------------------
+    const resolvedSubjects = await prisma.subject.findMany({
+      where: { slug: { in: input.subjectSlugs } },
+      select: { id: true, slug: true, name: true },
+    });
+    // Surface unknown slugs as a 400 — silently dropping them produced tutors
+    // with empty `tutor_subjects` rows that never showed on /subject/* pages.
+    const knownSlugs = new Set(resolvedSubjects.map((s) => s.slug));
+    const unknownSlugs = input.subjectSlugs.filter((s) => !knownSlugs.has(s));
+    if (unknownSlugs.length > 0) {
+      return fail(
+        400,
+        `ไม่รู้จัก subject slug: ${unknownSlugs.join(", ")}`,
+      );
+    }
+    const subjectsTaught = resolvedSubjects.map((s) => s.name).join(", ");
+
     const baseSlug = buildSlug([input.nickname, input.firstName, input.lastName], input.nickname);
     const slug = await ensureUniqueSlug(baseSlug, async (c) => {
       const existing = await prisma.tutor.findUnique({ where: { slug: c }, select: { id: true } });
@@ -187,7 +204,7 @@ export async function POST(request: Request) {
         firstName: input.firstName,
         lastName: input.lastName,
         profileImageUrl: input.profileImageUrl || null,
-        subjectsTaught: input.subjectsTaught,
+        subjectsTaught,
         address: input.address,
         education: input.education,
         teachingStyle: input.teachingStyle ?? null,
@@ -196,6 +213,16 @@ export async function POST(request: Request) {
         isPopular: false,
       },
       select: { id: true, slug: true },
+    });
+
+    // --- Write junction rows --------------------------------------------------
+    // subjectSlugs is required (min 1), and unknown slugs already returned 400
+    // above, so resolvedSubjects is guaranteed non-empty here.
+    await prisma.tutorSubject.createMany({
+      data: resolvedSubjects.map((s) => ({
+        tutorId: tutor.id,
+        subjectId: s.id,
+      })),
     });
 
     const response: AdminCreateTutorResponse = { id: tutor.id, slug: tutor.slug };

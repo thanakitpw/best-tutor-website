@@ -8,10 +8,11 @@
 
 import {
   MOCK_ALL_CATEGORIES,
-  MOCK_FEATURED_TUTORS,
   type MockSubject,
-  type MockTutor,
 } from "@/components/public/mock-data";
+
+// Re-export for components that previously imported `ListingTutor` from this module.
+export type { ListingTutor } from "@/lib/tutors/public";
 
 // ---- Sub-subjects ----------------------------------------------------------
 
@@ -402,19 +403,9 @@ export function allCategorySlugs(): readonly string[] {
   return SUBJECT_CATEGORIES.map((c) => c.slug);
 }
 
-// ---- Tutor pool ------------------------------------------------------------
-
-/**
- * Listings need more than the 6 featured tutors to stress-test pagination +
- * filters. We synthesise deterministic variants from the seeded tutors so
- * we never ship with fake photos and the experiment reproduces in tests.
- */
-export interface ListingTutor extends MockTutor {
-  /** Years of teaching experience — not in MockTutor but required by filter. */
-  experienceYears: number;
-  /** For gender filter. */
-  gender: "ชาย" | "หญิง";
-}
+// ---- Province dropdown source ---------------------------------------------
+// Static list used by the filter UI on /subject/* listings. Data layer for
+// real tutor rows is in `@/lib/tutors/public`.
 
 const PROVINCE_POOL = [
   "กรุงเทพมหานคร",
@@ -429,189 +420,8 @@ const PROVINCE_POOL = [
   "ออนไลน์",
 ] as const;
 
-const MALE_NICKNAMES = [
-  "ครูท็อป",
-  "ครูแบงค์",
-  "ครูโน้ต",
-  "ครูบอส",
-  "ครูฟลุ๊ค",
-  "ครูเจมส์",
-  "ครูเต้",
-  "ครูเอิร์ธ",
-] as const;
-const MALE_FIRSTNAMES = [
-  "ธนากร",
-  "ศุภกร",
-  "พงศกร",
-  "วรพล",
-  "กิตติพงษ์",
-  "ณัฐพล",
-  "อดิศร",
-  "รัชชานนท์",
-] as const;
-
-const FEMALE_NICKNAMES = [
-  "ครูมิ้น",
-  "ครูแพม",
-  "ครูอิง",
-  "ครูจูน",
-  "ครูป่าน",
-  "ครูนุ่น",
-  "ครูปอ",
-  "ครูปลา",
-] as const;
-const FEMALE_FIRSTNAMES = [
-  "พัชรินทร์",
-  "ภิญญาพัชญ์",
-  "กัลยกร",
-  "วรรณิภา",
-  "ปาริชาต",
-  "สุพัตรา",
-  "ชนาภา",
-  "ฐิติกา",
-] as const;
-
-const LASTNAMES = [
-  "วัฒนานุกูล",
-  "พงศ์ศิริ",
-  "สุนทรเวช",
-  "อัศวพรรณ",
-  "ศรีรัตนะ",
-  "เจริญทรัพย์",
-  "บุญอนันต์",
-  "วรธนะโชติ",
-] as const;
-
-const EDUCATION_POOL = [
-  "จุฬาฯ คณะวิศวกรรมศาสตร์",
-  "จุฬาฯ คณะอักษรศาสตร์",
-  "จุฬาฯ คณะครุศาสตร์",
-  "ธรรมศาสตร์ คณะศิลปศาสตร์",
-  "ธรรมศาสตร์ คณะพาณิชยศาสตร์",
-  "มหิดล คณะแพทยศาสตร์",
-  "มหิดล คณะวิทยาศาสตร์",
-  "เกษตรศาสตร์ คณะวิทยาศาสตร์",
-  "ม.ปักกิ่ง ภาษาศาสตร์",
-  "มศว คณะศึกษาศาสตร์",
-] as const;
-
-// A compact pseudo-random helper so each generated tutor is stable across
-// renders (no `Math.random`) — seeds from the index.
-function pickDet<T>(pool: readonly T[], seed: number): T {
-  return pool[seed % pool.length]!;
-}
-
-/**
- * Generate a wider tutor pool (up to ~36 rows) by mixing seed featured data
- * with deterministic synthesis. All tutors get `experienceYears` (1-14) and
- * `gender`, plus subject tags chosen from the relevant category + sub list.
- */
-export function buildListingTutorPool(): readonly ListingTutor[] {
-  // 1) Start with the 6 seed featured tutors — fill in missing filter fields.
-  const seeded: ListingTutor[] = MOCK_FEATURED_TUTORS.map((t, i) => ({
-    ...t,
-    experienceYears: [8, 6, 5, 4, 7, 9][i] ?? 5,
-    // Heuristic from nickname — all seeded nicknames are female. Mark some
-    // as male to balance filter coverage.
-    gender: i % 3 === 2 ? "ชาย" : "หญิง",
-  }));
-
-  // 2) Synthesise extras — one row per sub-subject across every category.
-  const extras: ListingTutor[] = [];
-  let seed = 100;
-  for (const cat of SUBJECT_CATEGORIES) {
-    const subjectLabels =
-      cat.subs.length > 0
-        ? cat.subs.map((s) => s.name)
-        : [cat.name];
-    for (const label of subjectLabels) {
-      // Two tutors per sub — one female, one male — to give the gender
-      // filter at least 2 rows to choose from per listing.
-      for (let genderIdx = 0; genderIdx < 2; genderIdx++) {
-        const isMale = genderIdx === 0;
-        const nickname = pickDet(
-          isMale ? MALE_NICKNAMES : FEMALE_NICKNAMES,
-          seed,
-        );
-        const firstName = pickDet(
-          isMale ? MALE_FIRSTNAMES : FEMALE_FIRSTNAMES,
-          seed + 1,
-        );
-        const lastName = pickDet(LASTNAMES, seed + 2);
-        const slug = `${slugFromName(nickname)}-${slugFromName(firstName)}-${seed}`;
-        const rating = Number((4.4 + ((seed * 37) % 60) / 100).toFixed(1));
-        const reviewCount = 8 + ((seed * 13) % 40);
-        const ratePricing = 350 + ((seed * 71) % 12) * 50;
-        const experienceYears = 1 + ((seed * 17) % 14);
-        const province = pickDet(PROVINCE_POOL, seed + 3);
-        const education = pickDet(EDUCATION_POOL, seed + 4);
-        const isPopular = seed % 9 === 0;
-
-        // Subject tags: the sub-name + (for variety) the category's name.
-        const subjects = Array.from(
-          new Set([label, cat.subs.length > 0 ? cat.name : label]),
-        );
-
-        extras.push({
-          slug,
-          nickname,
-          firstName,
-          lastName,
-          profileImageUrl: null,
-          rating,
-          reviewCount,
-          ratePricing,
-          subjects,
-          province,
-          education,
-          isPopular,
-          experienceYears,
-          gender: isMale ? "ชาย" : "หญิง",
-        });
-        seed += 1;
-      }
-    }
-  }
-
-  return [...seeded, ...extras];
-}
-
-function slugFromName(input: string): string {
-  // Transliteration isn't needed for mock — we just strip spaces and
-  // non-latin characters so the slug stays URL-safe. The `seed` suffix added
-  // by the caller keeps them unique even when the cleaned form collides.
-  return input
-    .normalize("NFKD")
-    .replace(/[^\w]+/g, "")
-    .toLowerCase()
-    .slice(0, 12) || "kru";
-}
-
-// ---- Tutor ↔ subject matching ---------------------------------------------
-
-function matchesTerms(tutor: ListingTutor, terms: readonly string[]): boolean {
-  if (terms.length === 0) return true;
-  const haystack = tutor.subjects.join(" · ").toLowerCase();
-  return terms.some((term) => haystack.includes(term.toLowerCase()));
-}
-
-export function getTutorsForCategory(
-  category: SubjectCategory,
-  pool: readonly ListingTutor[],
-): readonly ListingTutor[] {
-  return pool.filter((t) => matchesTerms(t, category.tutorMatchTerms));
-}
-
-export function getTutorsForSubSubject(
-  sub: SubSubject,
-  pool: readonly ListingTutor[],
-): readonly ListingTutor[] {
-  return pool.filter((t) => matchesTerms(t, sub.tutorMatchTerms));
-}
-
-// ---- Province dropdown source ---------------------------------------------
-
 export const PROVINCE_OPTIONS: readonly { value: string; label: string }[] = [
   { value: "all", label: "ทุกจังหวัด" },
   ...PROVINCE_POOL.map((p) => ({ value: p, label: p })),
 ];
+

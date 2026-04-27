@@ -21,7 +21,7 @@ export interface AdminTutor {
   teachingExperienceYears: number;
   teachingStyle?: string | null;
   subjectsTaught: string | null;
-  ratePricing?: string | null;
+  subjectSlugs: string[];
   address: string | null;
   vehicleType?: string | null;
   status: TutorStatus;

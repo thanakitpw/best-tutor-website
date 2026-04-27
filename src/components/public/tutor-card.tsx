@@ -14,7 +14,6 @@ export interface TutorCardData {
   profileImageUrl: string | null;
   rating: number;
   reviewCount: number;
-  ratePricing: number;
   subjects: string[];
   province?: string | null;
   education?: string | null;
@@ -49,7 +48,6 @@ export function TutorCard({ tutor, size = "default", className }: TutorCardProps
     profileImageUrl,
     rating,
     reviewCount,
-    ratePricing,
     subjects,
     province,
     education,
@@ -142,21 +140,15 @@ export function TutorCard({ tutor, size = "default", className }: TutorCardProps
           )}
         </div>
 
-        {/* Meta: location + price */}
-        <div className="mt-auto flex items-center justify-between pt-2 text-xs">
-          {province ? (
+        {/* Meta: location */}
+        {province && (
+          <div className="mt-auto flex items-center pt-2 text-xs">
             <span className="flex items-center gap-1 text-[color:var(--color-muted)]">
               <MapPin className="size-3" />
               {province}
             </span>
-          ) : (
-            <span />
-          )}
-          <span className="font-semibold text-[color:var(--color-heading)]">
-            ฿{ratePricing.toLocaleString("th-TH")}
-            <span className="text-[color:var(--color-muted)]">/ชม.</span>
-          </span>
-        </div>
+          </div>
+        )}
 
         {/* Actions */}
         <div className="mt-2 flex gap-2">

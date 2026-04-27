@@ -9,8 +9,12 @@
  */
 
 import { PrismaClient } from "@prisma/client";
+import { PrismaPg } from "@prisma/adapter-pg";
 
-const prisma = new PrismaClient();
+const connectionString = process.env.DATABASE_URL;
+if (!connectionString) throw new Error("DATABASE_URL is not set");
+const adapter = new PrismaPg({ connectionString });
+const prisma = new PrismaClient({ adapter });
 
 type SubjectSeed = {
   name: string;
@@ -46,10 +50,9 @@ const categories: CategorySeed[] = [
     icon: "calculator",
     sortOrder: 2,
     subjects: [
-      { name: "คณิตทั่วไป", slug: "math-general", sortOrder: 1 },
-      { name: "แคลคูลัส", slug: "calculus", sortOrder: 2 },
-      { name: "สถิติ", slug: "statistics", sortOrder: 3 },
-      { name: "บัญชี", slug: "accounting", sortOrder: 4 },
+      { name: "คณิตศาสตร์ ม.ต้น", slug: "math-lower-sec", sortOrder: 1 },
+      { name: "คณิตศาสตร์ ม.ปลาย", slug: "math-upper-sec", sortOrder: 2 },
+      { name: "คณิตศาสตร์มหาวิทยาลัย", slug: "math-university", sortOrder: 3 },
     ],
   },
   {
@@ -61,7 +64,6 @@ const categories: CategorySeed[] = [
       { name: "ฟิสิกส์", slug: "physics", sortOrder: 1 },
       { name: "เคมี", slug: "chemistry", sortOrder: 2 },
       { name: "ชีววิทยา", slug: "biology", sortOrder: 3 },
-      { name: "วิทย์ทั่วไป", slug: "science-general", sortOrder: 4 },
     ],
   },
   {
@@ -69,7 +71,11 @@ const categories: CategorySeed[] = [
     slug: "thai",
     icon: "book-open",
     sortOrder: 4,
-    subjects: [],
+    subjects: [
+      { name: "ภาษาไทย อ่าน", slug: "thai-reading", sortOrder: 1 },
+      { name: "ภาษาไทย เขียน", slug: "thai-writing", sortOrder: 2 },
+      { name: "ภาษาไทย สอบเข้า", slug: "thai-entrance", sortOrder: 3 },
+    ],
   },
   {
     name: "สังคมศึกษา",
@@ -88,8 +94,8 @@ const categories: CategorySeed[] = [
     icon: "laptop",
     sortOrder: 6,
     subjects: [
-      { name: "คอมพื้นฐาน", slug: "computer-basic", sortOrder: 1 },
-      { name: "โปรแกรมมิ่ง", slug: "programming", sortOrder: 2 },
+      { name: "Coding / โปรแกรมมิ่ง", slug: "programming", sortOrder: 1 },
+      { name: "พื้นฐานคอมพิวเตอร์", slug: "computer-basic", sortOrder: 2 },
     ],
   },
   {
@@ -110,8 +116,8 @@ const categories: CategorySeed[] = [
     subjects: [
       { name: "กีตาร์", slug: "guitar", sortOrder: 1 },
       { name: "กลอง", slug: "drum", sortOrder: 2 },
-      { name: "เต้น", slug: "dance", sortOrder: 3 },
-      { name: "เปียโน", slug: "piano", sortOrder: 4 },
+      { name: "เปียโน", slug: "piano", sortOrder: 3 },
+      { name: "เต้น", slug: "dance", sortOrder: 4 },
     ],
   },
   {
@@ -120,7 +126,7 @@ const categories: CategorySeed[] = [
     icon: "dumbbell",
     sortOrder: 9,
     subjects: [
-      { name: "ว่ายน้ำ", slug: "swim", sortOrder: 1 },
+      { name: "ว่ายน้ำ", slug: "swimming", sortOrder: 1 },
       { name: "เทควันโด", slug: "taekwondo", sortOrder: 2 },
       { name: "แบดมินตัน", slug: "badminton", sortOrder: 3 },
       { name: "โยคะ", slug: "yoga", sortOrder: 4 },

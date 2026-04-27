@@ -15,11 +15,10 @@ import {
 import { buildMetadata } from "@/lib/seo/metadata";
 import {
   SUBJECT_CATEGORIES,
-  buildListingTutorPool,
   findCategory,
-  getTutorsForCategory,
   PROVINCE_OPTIONS,
 } from "../_data";
+import { getListingTutorsForCategory } from "@/lib/tutors/public";
 import { TutorListing } from "../_components/tutor-listing";
 import { TutorListingSkeleton } from "../_components/tutor-listing-skeleton";
 
@@ -46,8 +45,7 @@ export async function generateMetadata({
     });
   }
 
-  const pool = buildListingTutorPool();
-  const matched = getTutorsForCategory(category, pool);
+  const matched = await getListingTutorsForCategory(category.slug);
   const tutorCount = matched.length;
 
   const title = `${category.seoHeadline} | Best Tutor Thailand`;
@@ -66,8 +64,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
   const category = findCategory(slug);
   if (!category) notFound();
 
-  const pool = buildListingTutorPool();
-  const tutors = getTutorsForCategory(category, pool);
+  const tutors = await getListingTutorsForCategory(category.slug);
 
   const breadcrumbItems = [
     { name: "หน้าแรก", url: "/" },
@@ -119,10 +116,10 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
             <h1 className="text-3xl font-bold leading-tight md:text-4xl">
               {category.seoHeadline}
             </h1>
-            <p className="max-w-2xl text-sm leading-7 text-white/85 md:text-base">
+            <p className="max-w-2xl text-sm leading-7 text-white md:text-base">
               {category.description}
             </p>
-            <div className="mt-2 flex flex-wrap items-center gap-4 text-sm text-white/90">
+            <div className="mt-2 flex flex-wrap items-center gap-4 text-sm text-white">
               <span className="inline-flex items-center gap-1.5">
                 <Users className="size-4" aria-hidden />
                 ติวเตอร์ {tutors.length.toLocaleString("th-TH")} คน

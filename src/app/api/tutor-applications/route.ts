@@ -42,7 +42,6 @@ const createTutorApplicationSchema = z.object({
   teachingExperienceYears: z.number().int().min(0).max(50),
   teachingStyle: z.string().trim().max(1000).optional(),
   subjectsTaught: z.string().trim().min(1).max(500),
-  ratePricing: z.string().trim().min(1).max(100),
   address: z.string().trim().min(1).max(500),
   vehicleType: z.string().trim().max(100).optional(),
   documents: documentsSchema,
@@ -110,7 +109,6 @@ export async function POST(request: Request) {
         teachingExperienceYears: input.teachingExperienceYears,
         teachingStyle: input.teachingStyle,
         subjectsTaught: input.subjectsTaught,
-        ratePricing: input.ratePricing,
         address: input.address,
         vehicleType: input.vehicleType,
         documents: input.documents

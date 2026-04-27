@@ -7,7 +7,6 @@ import { Eraser, Filter, Star, User2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import { Slider } from "@/components/ui/slider";
 import {
   Select,
   SelectContent,
@@ -23,8 +22,6 @@ import {
 // ---- Types & defaults ------------------------------------------------------
 
 export interface TutorFilterState {
-  /** Max price per hour (baht). 0 means "no cap". */
-  maxPrice: number;
   /** Minimum teaching experience in years. 0 means "any". */
   minExperience: number;
   /** Province value — "all" or specific province label. */
@@ -36,25 +33,13 @@ export interface TutorFilterState {
 }
 
 export const DEFAULT_FILTERS: TutorFilterState = {
-  maxPrice: 0,
   minExperience: 0,
   province: "all",
   minRating: 0,
   gender: "all",
 };
 
-export const PRICE_MIN = 0;
-export const PRICE_MAX = 2000;
-export const PRICE_STEP = 50;
-
-type FilterKey =
-  | "price"
-  | "exp"
-  | "province"
-  | "rating"
-  | "gender"
-  | "sort"
-  | "page";
+type FilterKey = "exp" | "province" | "rating" | "gender" | "sort" | "page";
 
 export interface ProvinceOption {
   value: string;
@@ -72,15 +57,10 @@ export function parseFiltersFromParams(
 ): TutorFilterState {
   const raw = (key: FilterKey): string | null => params.get(key);
 
-  const priceRaw = Number(raw("price"));
   const expRaw = Number(raw("exp"));
   const ratingRaw = Number(raw("rating"));
 
   return {
-    maxPrice:
-      Number.isFinite(priceRaw) && priceRaw > 0 && priceRaw <= PRICE_MAX
-        ? Math.round(priceRaw)
-        : DEFAULT_FILTERS.maxPrice,
     minExperience:
       Number.isFinite(expRaw) && expRaw > 0 && expRaw <= 40
         ? Math.round(expRaw)
@@ -101,7 +81,6 @@ type ReadonlyURLSearchParams = ReturnType<typeof useSearchParams>;
 /** Count of filters different from default — used to badge the mobile CTA. */
 export function countActiveFilters(state: TutorFilterState): number {
   let n = 0;
-  if (state.maxPrice !== DEFAULT_FILTERS.maxPrice) n++;
   if (state.minExperience !== DEFAULT_FILTERS.minExperience) n++;
   if (state.province !== DEFAULT_FILTERS.province) n++;
   if (state.minRating !== DEFAULT_FILTERS.minRating) n++;
@@ -120,10 +99,6 @@ export function serializeFiltersToParams(
     else params.set(key, value);
   };
 
-  set(
-    "price",
-    state.maxPrice !== DEFAULT_FILTERS.maxPrice ? String(state.maxPrice) : null,
-  );
   set(
     "exp",
     state.minExperience !== DEFAULT_FILTERS.minExperience
@@ -214,11 +189,6 @@ export function FilterSidebar({
   }, [commit]);
 
   const activeCount = countActiveFilters(filters);
-  const priceDisplay =
-    filters.maxPrice === DEFAULT_FILTERS.maxPrice
-      ? `฿${PRICE_MIN.toLocaleString("th-TH")} - ไม่จำกัด`
-      : `฿${PRICE_MIN.toLocaleString("th-TH")} - ฿${filters.maxPrice.toLocaleString("th-TH")}`;
-  const priceValue = filters.maxPrice === 0 ? PRICE_MAX : filters.maxPrice;
 
   const shellClassName =
     variant === "sheet"
@@ -258,43 +228,6 @@ export function FilterSidebar({
           </Button>
         )}
       </header>
-
-      <Separator />
-
-      {/* Price -----------------------------------------------------------*/}
-      <section className="space-y-3">
-        <div className="flex items-center justify-between">
-          <Label className="text-sm font-medium text-[color:var(--color-heading)]">
-            ช่วงราคา (บาท/ชม.)
-          </Label>
-          <span className="text-xs font-medium text-[color:var(--color-primary)]">
-            {priceDisplay}
-          </span>
-        </div>
-        <Slider
-          min={PRICE_MIN}
-          max={PRICE_MAX}
-          step={PRICE_STEP}
-          value={[priceValue]}
-          onValueChange={(v) => {
-            // Live label updates feel more responsive — we write URL on commit.
-            const next = v[0] ?? PRICE_MAX;
-            // Use a fast visual hint via DOM — but we rely on commit for URL.
-            // (React re-renders on searchParams change, so intermediate values
-            // aren't reflected until commit — acceptable for UX here.)
-            void next;
-          }}
-          onValueCommit={(v) => {
-            const next = v[0] ?? PRICE_MAX;
-            update("maxPrice", next >= PRICE_MAX ? 0 : next);
-          }}
-          aria-label="ช่วงราคา"
-        />
-        <div className="flex justify-between text-[11px] text-[color:var(--color-muted)]">
-          <span>฿{PRICE_MIN.toLocaleString("th-TH")}</span>
-          <span>฿{PRICE_MAX.toLocaleString("th-TH")}+</span>
-        </div>
-      </section>
 
       <Separator />
 

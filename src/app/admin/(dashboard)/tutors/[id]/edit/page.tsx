@@ -146,7 +146,7 @@ function toFormValues(tutor: AdminTutor): Partial<TutorFormValues> {
     firstName: tutor.firstName,
     lastName: tutor.lastName,
     profileImageUrl: tutor.profileImageUrl ?? "",
-    subjectsTaught: tutor.subjectsTaught ?? "",
+    subjectSlugs: tutor.subjectSlugs ?? [],
     address: tutor.address ?? "",
     education: tutor.education ?? "",
     teachingStyle: tutor.teachingStyle ?? "",

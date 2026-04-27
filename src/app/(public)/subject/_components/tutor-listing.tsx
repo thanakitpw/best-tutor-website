@@ -35,7 +35,6 @@ import type { ListingTutor } from "../_data";
 const SORT_OPTIONS = [
   { value: "popular", label: "ความนิยม" },
   { value: "rating", label: "คะแนนสูง → ต่ำ" },
-  { value: "price_asc", label: "ราคาต่ำ → สูง" },
   { value: "newest", label: "ใหม่ล่าสุด" },
 ] as const;
 
@@ -256,7 +255,6 @@ export function TutorListing({
                     profileImageUrl: tutor.profileImageUrl,
                     rating: tutor.rating,
                     reviewCount: tutor.reviewCount,
-                    ratePricing: tutor.ratePricing,
                     subjects: tutor.subjects,
                     province: tutor.province,
                     education: tutor.education,
@@ -296,7 +294,6 @@ function applyFilters(
   f: TutorFilterState,
 ): readonly ListingTutor[] {
   return tutors.filter((t) => {
-    if (f.maxPrice > 0 && t.ratePricing > f.maxPrice) return false;
     if (f.minExperience > 0 && t.experienceYears < f.minExperience) return false;
     if (f.province !== "all") {
       // Province strings in mock data are free-text (e.g. "กรุงเทพมหานคร",
@@ -327,9 +324,6 @@ function applySort(
         (a, b) => b.rating - a.rating || b.reviewCount - a.reviewCount,
       );
       break;
-    case "price_asc":
-      arr.sort((a, b) => a.ratePricing - b.ratePricing);
-      break;
     case "newest":
       // Mock has no createdAt — fall back to slug-based hash for determinism.
       arr.sort((a, b) => (a.slug < b.slug ? 1 : -1));
@@ -353,12 +347,6 @@ interface Chip {
 
 function buildChipList(f: TutorFilterState): Chip[] {
   const chips: Chip[] = [];
-  if (f.maxPrice !== DEFAULT_FILTERS.maxPrice) {
-    chips.push({
-      key: "maxPrice",
-      label: `ไม่เกิน ฿${f.maxPrice.toLocaleString("th-TH")}/ชม.`,
-    });
-  }
   if (f.minExperience !== DEFAULT_FILTERS.minExperience) {
     chips.push({
       key: "minExperience",

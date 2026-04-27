@@ -19,12 +19,11 @@ import {
 import { buildMetadata } from "@/lib/seo/metadata";
 import {
   SUBJECT_CATEGORIES,
-  buildListingTutorPool,
   findCategory,
   findSubSubject,
-  getTutorsForSubSubject,
   PROVINCE_OPTIONS,
 } from "../../_data";
+import { getListingTutorsForSubject } from "@/lib/tutors/public";
 import { TutorListing } from "../../_components/tutor-listing";
 import { TutorListingSkeleton } from "../../_components/tutor-listing-skeleton";
 
@@ -65,8 +64,7 @@ export async function generateMetadata({
     });
   }
 
-  const pool = buildListingTutorPool();
-  const tutors = getTutorsForSubSubject(sub, pool);
+  const tutors = await getListingTutorsForSubject(sub.slug);
 
   const title = `ติวเตอร์${sub.name} สอนพิเศษตัวต่อตัว | Best Tutor Thailand`;
   const description = `รวมติวเตอร์${sub.name}คุณภาพสูง สอนพิเศษตัวต่อตัว ทั้งที่บ้านและออนไลน์ มีติวเตอร์ให้เลือก ${tutors.length.toLocaleString("th-TH")} คน กรองตามประสบการณ์ ราคา และพื้นที่`;
@@ -92,8 +90,7 @@ export default async function SubSubjectPage({ params }: SubSubjectPageProps) {
   const sub = findSubSubject(category, subSlug);
   if (!sub) notFound();
 
-  const pool = buildListingTutorPool();
-  const tutors = getTutorsForSubSubject(sub, pool);
+  const tutors = await getListingTutorsForSubject(sub.slug);
 
   const breadcrumbItems = [
     { name: "หน้าแรก", url: "/" },
@@ -147,11 +144,11 @@ export default async function SubSubjectPage({ params }: SubSubjectPageProps) {
             <h1 className="text-3xl font-bold leading-tight md:text-4xl">
               ติวเตอร์{sub.name} สอนพิเศษตัวต่อตัว
             </h1>
-            <p className="max-w-2xl text-sm leading-7 text-white/85 md:text-base">
+            <p className="max-w-2xl text-sm leading-7 text-white md:text-base">
               รวมครูสอนพิเศษ{sub.name}ที่ผ่านการคัดกรองคุณภาพ พร้อมสอนทั้งที่บ้านและออนไลน์
               เลือกติวเตอร์ที่เหมาะกับระดับชั้นและเป้าหมายของคุณ
             </p>
-            <div className="mt-2 flex flex-wrap items-center gap-4 text-sm text-white/90">
+            <div className="mt-2 flex flex-wrap items-center gap-4 text-sm text-white">
               <span className="inline-flex items-center gap-1.5">
                 <Users className="size-4" aria-hidden />
                 ติวเตอร์ {tutors.length.toLocaleString("th-TH")} คน

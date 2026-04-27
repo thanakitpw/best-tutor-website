@@ -11,7 +11,6 @@ import {
   GraduationCap,
   MapPin,
   Sparkles,
-  Wallet,
 } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
@@ -19,17 +18,17 @@ import { Button } from "@/components/ui/button";
 import { Breadcrumb } from "@/components/public/breadcrumb";
 import {
   MOCK_ALL_CATEGORIES,
-  MOCK_FEATURED_TUTORS,
   MOCK_POPULAR_SUBJECTS,
-  type MockTutor,
 } from "@/components/public/mock-data";
 import {
-  getMockReviewsByTutorSlug,
-  getRelatedMockTutors,
-  mockRatingStats,
-} from "@/components/public/mock-reviews";
+  getAllPublicTutorSlugs,
+  getRelatedTutors,
+  getTutorBySlug,
+  getTutorSubjectSlugs,
+  type PublicTutor,
+} from "@/lib/tutors/public";
+import type { ReviewItem } from "@/components/public/mock-reviews";
 import { TutorCard } from "@/components/public/tutor-card";
-import { TutorContactForm } from "@/components/public/tutor-contact-form";
 import { TutorProfileHero } from "@/components/public/tutor-profile-hero";
 import { TutorProfileTabs } from "@/components/public/tutor-profile-tabs";
 import { TutorReviews } from "@/components/public/tutor-reviews";
@@ -43,13 +42,13 @@ import { buildMetadata } from "@/lib/seo/metadata";
 import { SITE_URL } from "@/lib/seo/site-metadata";
 
 // ---- Data helpers ----------------------------------------------------------
-// `mockTutorBySlug` + the category lookup are temporary — Phase 8 will replace
-// them with calls to `/api/tutors/[slug]`. Returning `null` on miss so the
-// page can call `notFound()`.
 
-function mockTutorBySlug(slug: string): MockTutor | null {
-  return MOCK_FEATURED_TUTORS.find((t) => t.slug === slug) ?? null;
-}
+/** Empty stats placeholder — used until reviews exist for a tutor. */
+const EMPTY_STATS = {
+  average: 0,
+  total: 0,
+  distribution: { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 } as Record<1 | 2 | 3 | 4 | 5, number>,
+};
 
 /** Best-effort mapping from a tutor's subject names to a subject category
  * slug from `MOCK_ALL_CATEGORIES`. Used by breadcrumb and for the lead
@@ -72,11 +71,11 @@ function matchCategory(subjects: readonly string[]): {
 }
 
 // ---- Static params ---------------------------------------------------------
-// Pre-render all mocked tutors at build time so the profile pages work even
-// when the DB is empty. Additional slugs fall through to `notFound()`.
+// Pre-render all APPROVED tutors at build time. Additional slugs fall through
+// to `notFound()` and are also rendered on demand if the tutor is later approved.
 
-export function generateStaticParams() {
-  return MOCK_FEATURED_TUTORS.map((t) => ({ slug: t.slug }));
+export async function generateStaticParams() {
+  return await getAllPublicTutorSlugs();
 }
 
 // ---- Metadata --------------------------------------------------------------
@@ -87,7 +86,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const tutor = mockTutorBySlug(slug);
+  const tutor = await getTutorBySlug(slug);
 
   if (!tutor) {
     return buildMetadata({
@@ -98,17 +97,19 @@ export async function generateMetadata({
     });
   }
 
-  const stats = mockRatingStats(tutor.slug);
   const displayName = `${tutor.nickname} ${tutor.firstName}${
     tutor.lastName ? ` ${tutor.lastName}` : ""
   }`.trim();
   const mainSubject = tutor.subjects[0] ?? "ติวเตอร์";
-  const ratingLabel = stats.total > 0 ? stats.average.toFixed(1) : tutor.rating.toFixed(1);
+  const ratingLabel =
+    tutor.reviewCount > 0 ? tutor.rating.toFixed(1) : "ใหม่";
 
   const title = `${displayName} ติวเตอร์${mainSubject} คะแนน ${ratingLabel}/5 | Best Tutor Thailand`;
   const description = `${displayName} ติวเตอร์${tutor.subjects.join(" · ")} จาก${tutor.education} สอนตัวต่อตัวทั้งที่บ้านและออนไลน์${
     tutor.province ? ` พื้นที่ ${tutor.province}` : ""
-  } เริ่มต้น ฿${tutor.ratePricing.toLocaleString("th-TH")}/ชม. คะแนน ${ratingLabel}/5 จาก ${stats.total || tutor.reviewCount} รีวิว`;
+  }${
+    tutor.reviewCount > 0 ? ` คะแนน ${ratingLabel}/5 จาก ${tutor.reviewCount} รีวิว` : ""
+  }`;
 
   return buildMetadata({
     title,
@@ -134,19 +135,24 @@ export default async function TutorProfilePage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const tutor = mockTutorBySlug(slug);
+  const tutor = await getTutorBySlug(slug);
   if (!tutor) {
     notFound();
   }
 
-  const reviews = getMockReviewsByTutorSlug(tutor.slug);
-  const stats = mockRatingStats(tutor.slug);
+  const reviews: ReviewItem[] = [];
+  const stats = EMPTY_STATS;
   const category = matchCategory(tutor.subjects);
-  const related = getRelatedMockTutors(tutor, MOCK_FEATURED_TUTORS, 3);
+  const subjectSlugs = await getTutorSubjectSlugs(tutor.slug);
+  const related = await getRelatedTutors({
+    excludeSlug: tutor.slug,
+    subjectSlugs,
+    limit: 3,
+  });
   const displayName = `${tutor.nickname} ${tutor.firstName}${
     tutor.lastName ? ` ${tutor.lastName}` : ""
   }`.trim();
-  const experienceYears = Math.max(3, Math.floor(tutor.rating));
+  const experienceYears = Math.max(3, Math.floor(tutor.rating || 5));
 
   // ---- JSON-LD -------------------------------------------------------------
   // Person schema embeds aggregateRating when present. We also emit the top 5
@@ -234,17 +240,6 @@ export default async function TutorProfilePage({
         </div>
       </section>
 
-      {/* Contact form */}
-      <section className="bg-[color:var(--color-alt-bg)]">
-        <div className="mx-auto w-full max-w-[1240px] px-4 py-12 md:px-6 md:py-16">
-          <TutorContactForm
-            tutorNickname={tutor.nickname.replace(/^ครู/, "")}
-            tutorSlug={tutor.slug}
-            subjects={tutor.subjects}
-            subjectCategory={category.name}
-          />
-        </div>
-      </section>
 
       {/* Related tutors */}
       {related.length > 0 && (
@@ -279,7 +274,6 @@ export default async function TutorProfilePage({
                     profileImageUrl: t.profileImageUrl,
                     rating: t.rating,
                     reviewCount: t.reviewCount,
-                    ratePricing: t.ratePricing,
                     subjects: t.subjects,
                     province: t.province,
                     education: t.education,
@@ -321,7 +315,7 @@ function InfoCard({
   );
 }
 
-function AboutTab({ tutor }: { tutor: MockTutor }) {
+function AboutTab({ tutor }: { tutor: PublicTutor }) {
   return (
     <div className="grid gap-6 md:grid-cols-[minmax(0,_2fr)_minmax(0,_1fr)]">
       <div className="flex flex-col gap-5">
@@ -381,11 +375,6 @@ function AboutTab({ tutor }: { tutor: MockTutor }) {
 
       <aside className="flex flex-col gap-3">
         <InfoCard
-          icon={<Wallet className="size-5" />}
-          label="ค่าเรียนเริ่มต้น"
-          value={`฿${tutor.ratePricing.toLocaleString("th-TH")} / ชั่วโมง`}
-        />
-        <InfoCard
           icon={<MapPin className="size-5" />}
           label="พื้นที่สอน"
           value={tutor.province ? `${tutor.province} และออนไลน์` : "ทั่วประเทศ (ออนไลน์)"}
@@ -404,7 +393,7 @@ function ExperienceTab({
   tutor,
   experienceYears,
 }: {
-  tutor: MockTutor;
+  tutor: PublicTutor;
   experienceYears: number;
 }) {
   // Mocked background — will come from Tutor model fields (education,
@@ -480,7 +469,7 @@ function ExperienceTab({
   );
 }
 
-function CoursesTab({ tutor }: { tutor: MockTutor }) {
+function CoursesTab({ tutor }: { tutor: PublicTutor }) {
   // Placeholder courses — real course records will be joined from the `Course`
   // Prisma model in Phase 8. Shape mirrors the eventual `MockCourse` fields.
   const courses = [
