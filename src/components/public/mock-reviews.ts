@@ -196,14 +196,14 @@ export const MOCK_REVIEWS: MockReview[] = [
     createdAt: new Date("2025-12-18"),
   },
 
-  // ครูเอม — 3 reviews
+  // ครูแจม — 3 reviews
   {
     id: "r13",
-    tutorSlug: "kru-aim-supanida",
+    tutorSlug: "kru-jam-supanida",
     reviewerName: "น้องเบล",
     rating: 5,
     comment:
-      "ครูเอมสอนชีววิทยาเหมือนเล่านิทาน เข้าใจง่ายสุด ๆ ติดหมอแล้วค่ะ ขอบคุณมาก",
+      "ครูแจมสอนชีววิทยาเหมือนเล่านิทาน เข้าใจง่ายสุด ๆ ติดหมอแล้วค่ะ ขอบคุณมาก",
     images: [IMG_NOTE],
     isVerified: true,
     adminReply: ADMIN_REPLY_STANDARD,
@@ -211,7 +211,7 @@ export const MOCK_REVIEWS: MockReview[] = [
   },
   {
     id: "r14",
-    tutorSlug: "kru-aim-supanida",
+    tutorSlug: "kru-jam-supanida",
     reviewerName: "คุณแม่พิม",
     rating: 5,
     comment:
@@ -223,7 +223,7 @@ export const MOCK_REVIEWS: MockReview[] = [
   },
   {
     id: "r15",
-    tutorSlug: "kru-aim-supanida",
+    tutorSlug: "kru-jam-supanida",
     reviewerName: "น้องพี",
     rating: 4,
     comment:
@@ -234,14 +234,14 @@ export const MOCK_REVIEWS: MockReview[] = [
     createdAt: new Date("2026-01-05"),
   },
 
-  // ครูอลิช — 3 reviews
+  // ครูอลิซ — 3 reviews
   {
     id: "r16",
     tutorSlug: "kru-alice-chavalya",
     reviewerName: "น้องออม",
     rating: 5,
     comment:
-      "SAT score ขึ้นจาก 1200 เป็น 1480 หลังเรียนกับครูอลิชแค่ 3 เดือน ครูมี strategy ดีมาก",
+      "SAT score ขึ้นจาก 1200 เป็น 1480 หลังเรียนกับครูอลิซแค่ 3 เดือน ครูมี strategy ดีมาก",
     images: [IMG_BOOK, IMG_DESK],
     isVerified: true,
     adminReply: ADMIN_REPLY_STANDARD,

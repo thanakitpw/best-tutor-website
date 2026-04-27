@@ -26,14 +26,11 @@ export interface MockSubject {
 }
 
 export const MOCK_POPULAR_SUBJECTS: MockSubject[] = [
-  { slug: "english", name: "ภาษาอังกฤษ", iconName: "Languages", tutorCount: 128, tagline: "Conversation · IELTS · TOEIC" },
-  { slug: "chinese", name: "ภาษาจีน", iconName: "Languages", tutorCount: 42, tagline: "HSK · Business Chinese" },
-  { slug: "math", name: "คณิตศาสตร์", iconName: "Calculator", tutorCount: 96, tagline: "ม.ต้น · ม.ปลาย · มหาวิทยาลัย" },
-  { slug: "science", name: "วิทยาศาสตร์", iconName: "Microscope", tutorCount: 74, tagline: "ฟิสิกส์ · เคมี · ชีววิทยา" },
   { slug: "thai", name: "ภาษาไทย", iconName: "BookOpen", tutorCount: 35, tagline: "อ่าน · เขียน · สอบเข้า" },
   { slug: "social", name: "สังคมศึกษา", iconName: "Globe2", tutorCount: 28, tagline: "ประวัติศาสตร์ · เศรษฐศาสตร์" },
-  { slug: "computer", name: "คอมพิวเตอร์", iconName: "Monitor", tutorCount: 22, tagline: "Coding · พื้นฐานคอม" },
-  { slug: "art", name: "ศิลปะ", iconName: "Palette", tutorCount: 18, tagline: "วาดรูป · กราฟิกดีไซน์" },
+  { slug: "math", name: "คณิตศาสตร์", iconName: "Calculator", tutorCount: 96, tagline: "ม.ต้น · ม.ปลาย · มหาวิทยาลัย" },
+  { slug: "science", name: "วิทยาศาสตร์", iconName: "Microscope", tutorCount: 74, tagline: "ฟิสิกส์ · เคมี · ชีววิทยา" },
+  { slug: "language", name: "ภาษาต่างประเทศ", iconName: "Languages", tutorCount: 186, tagline: "อังกฤษ · จีน · ญี่ปุ่น · เกาหลี" },
 ];
 
 export const MOCK_ALL_CATEGORIES: MockSubject[] = [
@@ -114,8 +111,8 @@ export const MOCK_FEATURED_TUTORS: MockTutor[] = [
     isPopular: false,
   },
   {
-    slug: "kru-aim-supanida",
-    nickname: "ครูเอม",
+    slug: "kru-jam-supanida",
+    nickname: "ครูแจม",
     firstName: "สุพาณิดา",
     lastName: "เจริญสุข",
     profileImageUrl: PLACEHOLDER_AVATAR(),
@@ -129,7 +126,7 @@ export const MOCK_FEATURED_TUTORS: MockTutor[] = [
   },
   {
     slug: "kru-alice-chavalya",
-    nickname: "ครูอลิช",
+    nickname: "ครูอลิซ",
     firstName: "ชวัลญา",
     lastName: "รัตนวงศ์",
     profileImageUrl: PLACEHOLDER_AVATAR(),
@@ -341,6 +338,8 @@ export const MOCK_PARTNER_LOGOS: string[] = [
   "KMITL",
   "มศว",
   "SWU",
+  "ม.ศิลปากร",
+  "ม.ขอนแก่น",
 ];
 
 // ---- Navigation links ------------------------------------------------------

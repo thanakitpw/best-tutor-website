@@ -3,28 +3,25 @@ import Link from "next/link";
 import Image from "next/image";
 import {
   ArrowRight,
-  Award,
   BookOpenCheck,
   CalendarCheck2,
-  CheckCircle2,
-  Handshake,
+  Clock,
+  GraduationCap,
+  Lightbulb,
   Mail,
   MapPin,
   Phone,
-  Quote,
-  Search as SearchIcon,
   Sparkles,
   Star,
-  Users2,
 } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ArticleCard } from "@/components/public/article-card";
+import { FeaturedTutorAvatar } from "@/components/public/featured-tutor-avatar";
 import { HeroSearch } from "@/components/public/hero-search";
 import { StatsBar } from "@/components/public/stats-bar";
 import { SubjectCard } from "@/components/public/subject-card";
-import { TutorCard } from "@/components/public/tutor-card";
 import {
   CONTACT_INFO,
   MOCK_FAQ_ITEMS,
@@ -73,15 +70,13 @@ export default function HomePage() {
         ]}
       />
       <HeroSection />
-      <PartnersSection />
       <PopularSubjectsSection />
-      <FeaturedTutorsSection />
       <FeaturedCoursesSection />
-      <HowItWorksSection />
+      <FeaturedTutorsSection />
       <TestimonialsSection />
       <ArticlesSection />
+      <PartnersSection />
       <AboutSection />
-      <ContactSection />
     </>
   );
 }
@@ -156,54 +151,37 @@ function HeroSection() {
   );
 }
 
-// ---- Section 2: Partner logos ----------------------------------------------
-
-function PartnersSection() {
-  return (
-    <section aria-label="สถาบันคู่ความร่วมมือ" className="border-b border-[color:var(--color-border)] bg-white">
-      <div className="mx-auto w-full max-w-[1240px] px-4 py-10 md:px-6">
-        <p className="text-center text-xs font-medium uppercase tracking-[0.18em] text-[color:var(--color-muted)]">
-          ติวเตอร์จากสถาบันชั้นนำของไทย
-        </p>
-        <ul className="mt-6 grid grid-cols-2 items-center gap-4 sm:grid-cols-4 lg:grid-cols-8">
-          {MOCK_PARTNER_LOGOS.map((name) => (
-            <li
-              key={name}
-              className="flex h-12 items-center justify-center rounded-lg border border-[color:var(--color-border)] bg-[color:var(--color-alt-bg)] px-3 text-center text-xs font-semibold text-[color:var(--color-muted)] transition-colors hover:text-[color:var(--color-primary)]"
-            >
-              {name}
-            </li>
-          ))}
-        </ul>
-      </div>
-    </section>
-  );
-}
-
-// ---- Section 3: Popular subjects ------------------------------------------
+// ---- Section 2: Popular subjects (5 thumbnail cards) ---------------------
 
 function PopularSubjectsSection() {
   return (
-    <section aria-labelledby="popular-subjects-title" className="bg-[color:var(--color-alt-bg)]">
+    <section
+      aria-labelledby="popular-subjects-title"
+      className="bg-[color:var(--color-alt-bg)]"
+    >
       <div className="mx-auto w-full max-w-[1240px] px-4 py-16 md:px-6 md:py-20">
         <SectionHeader
-          eyebrow="หมวดวิชายอดนิยม"
-          title="เลือกวิชาที่คุณสนใจ"
-          description="เรามีติวเตอร์ครอบคลุมทุกวิชาตั้งแต่ประถมจนถึงมหาวิทยาลัย พร้อมทั้งคอร์สเตรียมสอบเฉพาะทาง"
+          eyebrow="เลือกหลักสูตร"
+          title="รายวิชาที่ท่านสนใจ"
+          description="เรามีติวเตอร์ครอบคลุมทุกวิชาตั้งแต่ประถมจนถึงมหาวิทยาลัย พร้อมคอร์สเตรียมสอบเฉพาะทาง"
           action={
             <Link
               href="/tutors"
               className="inline-flex items-center gap-1 text-sm font-semibold text-[color:var(--color-primary)] hover:underline"
             >
-              ดูทุกวิชา
+              ดูหลักสูตรทั้งหมด
               <ArrowRight className="size-4" />
             </Link>
           }
           titleId="popular-subjects-title"
         />
-        <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-10 grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
           {MOCK_POPULAR_SUBJECTS.map((subject) => (
-            <SubjectCard key={subject.slug} subject={subject} />
+            <SubjectCard
+              key={subject.slug}
+              subject={subject}
+              variant="thumbnail"
+            />
           ))}
         </div>
       </div>
@@ -211,47 +189,19 @@ function PopularSubjectsSection() {
   );
 }
 
-// ---- Section 4: Featured tutors -------------------------------------------
-
-function FeaturedTutorsSection() {
-  return (
-    <section aria-labelledby="featured-tutors-title" className="bg-white">
-      <div className="mx-auto w-full max-w-[1240px] px-4 py-16 md:px-6 md:py-20">
-        <SectionHeader
-          eyebrow="ติวเตอร์แนะนำ"
-          title="ติวเตอร์ยอดนิยมของเรา"
-          description="ติวเตอร์มือโปรที่ได้รับคะแนนรีวิวสูง พร้อมประสบการณ์สอนจริง"
-          action={
-            <Link
-              href="/tutors"
-              className="inline-flex items-center gap-1 text-sm font-semibold text-[color:var(--color-primary)] hover:underline"
-            >
-              ดูติวเตอร์ทั้งหมด
-              <ArrowRight className="size-4" />
-            </Link>
-          }
-          titleId="featured-tutors-title"
-        />
-        <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3">
-          {MOCK_FEATURED_TUTORS.slice(0, 6).map((tutor) => (
-            <TutorCard key={tutor.slug} tutor={tutor} />
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-// ---- Section 5: Featured courses ------------------------------------------
+// ---- Section 3: Featured courses (blue gradient covers) ------------------
 
 function FeaturedCoursesSection() {
   return (
-    <section aria-labelledby="featured-courses-title" className="bg-[color:var(--color-alt-bg)]">
+    <section
+      aria-labelledby="featured-courses-title"
+      className="bg-white"
+    >
       <div className="mx-auto w-full max-w-[1240px] px-4 py-16 md:px-6 md:py-20">
         <SectionHeader
-          eyebrow="คอร์สแนะนำ"
-          title="คอร์สเรียนแพ็คเกจสุดคุ้ม"
-          description="คอร์สยอดนิยมที่ออกแบบโดยติวเตอร์ผู้เชี่ยวชาญ เน้นผลลัพธ์จริง"
+          eyebrow="คอร์สเรียนแนะนำ"
+          title="คอร์สยอดนิยมที่นักเรียนเลือกมากที่สุด"
+          description="คอร์สที่ออกแบบโดยติวเตอร์ผู้เชี่ยวชาญ เน้นผลลัพธ์จริง เรียนได้ทั้งที่บ้านและออนไลน์"
           titleId="featured-courses-title"
         />
         <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
@@ -260,29 +210,54 @@ function FeaturedCoursesSection() {
               key={course.slug}
               className="group flex flex-col overflow-hidden rounded-xl border border-[color:var(--color-border)] bg-white shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md"
             >
+              {/* Cover — blue gradient + gold "คอร์ส" ribbon + decorative icon */}
               <div
-                className="flex aspect-[4/3] items-end p-4 text-[color:var(--color-heading)]"
-                style={{ background: course.accentColor }}
+                className="relative flex aspect-[4/3] flex-col justify-between overflow-hidden p-5 text-white"
+                style={{
+                  backgroundImage:
+                    "linear-gradient(135deg, #0B3A7E 0%, #046BD2 100%)",
+                }}
                 aria-label={course.imageAlt}
               >
-                <Badge className="bg-white/80 text-[11px] text-[color:var(--color-heading)]">
-                  {course.durationHours} ชั่วโมง
-                </Badge>
-              </div>
-              <div className="flex flex-1 flex-col gap-2 p-4">
-                <h3 className="line-clamp-2 text-base font-semibold text-[color:var(--color-heading)]">
+                {/* Diagonal highlight slash (decorative) */}
+                <span
+                  aria-hidden
+                  className="pointer-events-none absolute -right-10 -top-10 size-40 rotate-12 rounded-3xl bg-white/10"
+                />
+                <span
+                  aria-hidden
+                  className="pointer-events-none absolute -bottom-8 -left-6 size-32 rounded-full bg-white/5"
+                />
+                {/* Gold ribbon */}
+                <span className="absolute right-3 top-3 rotate-6 rounded-md bg-[#FFB800] px-3 py-1 text-[11px] font-bold tracking-wide text-white shadow-sm">
+                  คอร์ส
+                </span>
+
+                {/* Lucide decorative icon low-opacity */}
+                <GraduationCap
+                  aria-hidden
+                  className="absolute bottom-4 right-4 size-16 text-white/15"
+                />
+
+                {/* Course title — large */}
+                <h3 className="relative line-clamp-2 pr-10 pt-6 text-xl font-bold leading-tight md:text-2xl">
                   {course.title}
                 </h3>
-                <p className="line-clamp-3 text-xs leading-5 text-[color:var(--color-muted)]">
+
+                {/* Duration badge bottom-left */}
+                <span className="relative inline-flex items-center gap-1.5 self-start rounded-full bg-white/15 px-3 py-1 text-xs font-semibold backdrop-blur">
+                  <Clock aria-hidden className="size-3.5" />
+                  {course.durationHours} ชั่วโมง
+                </span>
+              </div>
+
+              <div className="flex flex-1 flex-col gap-2 p-4">
+                <h4 className="line-clamp-2 text-base font-semibold text-[color:var(--color-heading)]">
+                  {course.title}
+                </h4>
+                <p className="line-clamp-2 text-xs leading-5 text-[color:var(--color-muted)]">
                   {course.description}
                 </p>
-                <Link
-                  href="/find-tutor"
-                  className="mt-auto inline-flex items-center gap-1 pt-2 text-xs font-semibold text-[color:var(--color-primary)] hover:underline"
-                >
-                  สอบถามรายละเอียด
-                  <ArrowRight className="size-3" />
-                </Link>
               </div>
             </article>
           ))}
@@ -292,110 +267,129 @@ function FeaturedCoursesSection() {
   );
 }
 
-// ---- Section 6: How it works ----------------------------------------------
+// ---- Section 4: Featured tutors (blue BG, circular avatars) --------------
 
-const HOW_IT_WORKS = [
-  {
-    icon: SearchIcon,
-    title: "1. เลือกวิชาที่ต้องการ",
-    description: "กรอกวิชา ระดับชั้น และพื้นที่ที่สะดวก เราจะคัดติวเตอร์ที่เหมาะสมให้",
-  },
-  {
-    icon: Handshake,
-    title: "2. จับคู่ติวเตอร์",
-    description: "ทีมงานแนะนำติวเตอร์ 3-5 คนให้เลือก ภายใน 24 ชั่วโมง",
-  },
-  {
-    icon: CalendarCheck2,
-    title: "3. เริ่มเรียนได้เลย",
-    description: "นัดเวลา ตกลงค่าใช้จ่าย และเริ่มเรียนได้ทันทีทั้งที่บ้านและออนไลน์",
-  },
-] as const;
-
-function HowItWorksSection() {
+function FeaturedTutorsSection() {
+  // Match Paper order: วาวา, มิกะ, วิว, แจม, อลิซ, เนย (already in that order in mock-data)
+  const tutors = MOCK_FEATURED_TUTORS.slice(0, 6);
   return (
-    <section aria-labelledby="how-it-works-title" className="bg-white">
-      <div className="mx-auto w-full max-w-[1240px] px-4 py-16 md:px-6 md:py-20">
-        <SectionHeader
-          eyebrow="ขั้นตอนง่าย ๆ"
-          title="เริ่มเรียนได้ใน 3 ขั้นตอน"
-          description="ไม่ต้องเสียเวลา หาครูดี ๆ ได้ภายในไม่กี่คลิก"
-          centered
-          titleId="how-it-works-title"
-        />
-        <ol className="mt-12 grid gap-6 md:grid-cols-3">
-          {HOW_IT_WORKS.map(({ icon: Icon, title, description }) => (
-            <li
-              key={title}
-              className="flex flex-col items-center gap-3 rounded-2xl border border-[color:var(--color-border)] bg-[color:var(--color-alt-bg)] p-6 text-center"
-            >
-              <span className="flex size-14 items-center justify-center rounded-2xl bg-[color:var(--color-primary)] text-white shadow-sm">
-                <Icon className="size-6" />
-              </span>
-              <h3 className="text-base font-semibold text-[color:var(--color-heading)]">
-                {title}
-              </h3>
-              <p className="text-sm leading-6 text-[color:var(--color-muted)]">
-                {description}
-              </p>
-            </li>
-          ))}
-        </ol>
-      </div>
-    </section>
-  );
-}
+    <section
+      aria-labelledby="featured-tutors-title"
+      className="relative overflow-hidden bg-[color:var(--color-primary)]"
+    >
+      {/* Subtle radial highlight behind content */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 opacity-60"
+        style={{
+          backgroundImage:
+            "radial-gradient(ellipse at center top, rgba(255,255,255,0.18) 0%, transparent 60%)",
+        }}
+      />
+      <div className="relative mx-auto w-full max-w-[1240px] px-4 py-16 md:px-6 md:py-20">
+        <div className="flex flex-col items-center gap-3 text-center">
+          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-white/80">
+            แนะนำ
+          </p>
+          <h2
+            id="featured-tutors-title"
+            className="text-2xl font-bold leading-tight text-white md:text-3xl"
+          >
+            ติวเตอร์ที่ได้รับความนิยม
+          </h2>
+          <p className="max-w-2xl text-sm leading-6 text-white/80 md:text-base">
+            ติวเตอร์มือโปรที่ได้รับคะแนนรีวิวสูง พร้อมประสบการณ์สอนจริงในทุกระดับชั้น
+          </p>
+        </div>
 
-// ---- Section 7: Testimonials ----------------------------------------------
-
-function TestimonialsSection() {
-  return (
-    <section aria-labelledby="testimonials-title" className="bg-[color:var(--color-light-bg)]">
-      <div className="mx-auto w-full max-w-[1240px] px-4 py-16 md:px-6 md:py-20">
-        <SectionHeader
-          eyebrow="รีวิวจากผู้เรียนจริง"
-          title="ฟีดแบ็กจากนักเรียนและผู้ปกครอง"
-          description="ประสบการณ์จริงจากผู้ที่เคยใช้บริการ Best Tutor Thailand"
-          centered
-          titleId="testimonials-title"
-        />
-        <div className="mt-10 grid gap-5 md:grid-cols-3">
-          {MOCK_TESTIMONIALS.map((review) => (
-            <figure
-              key={review.id}
-              className="relative flex flex-col gap-4 rounded-2xl border border-[color:var(--color-border)] bg-white p-6 shadow-sm"
-            >
-              <Quote
-                aria-hidden
-                className="size-8 text-[color:var(--color-primary)]/20"
-              />
-              <div className="flex items-center gap-1">
-                {Array.from({ length: review.rating }).map((_, i) => (
-                  <Star
-                    key={i}
-                    aria-hidden
-                    className="size-4 fill-[color:var(--color-cta)] text-[color:var(--color-cta)]"
-                  />
-                ))}
-              </div>
-              <blockquote className="text-sm leading-6 text-[color:var(--color-body)]">
-                “{review.quote}”
-              </blockquote>
-              <figcaption>
-                <p className="text-sm font-semibold text-[color:var(--color-heading)]">
-                  {review.name}
-                </p>
-                <p className="text-xs text-[color:var(--color-muted)]">{review.role}</p>
-              </figcaption>
-            </figure>
+        <div className="mt-12 grid grid-cols-2 gap-8 sm:grid-cols-3 lg:grid-cols-6">
+          {tutors.map((tutor) => (
+            <FeaturedTutorAvatar key={tutor.slug} tutor={tutor} />
           ))}
+        </div>
+
+        <div className="mt-10 flex justify-center">
+          <Button
+            asChild
+            variant="outline"
+            className="h-11 border-white/40 bg-white/10 px-6 text-white hover:bg-white hover:text-[color:var(--color-primary)]"
+          >
+            <Link href="/tutors">
+              ดูติวเตอร์ทั้งหมด
+              <ArrowRight className="size-4" />
+            </Link>
+          </Button>
         </div>
       </div>
     </section>
   );
 }
 
-// ---- Section 8: Articles --------------------------------------------------
+// ---- Section 5: Testimonials ---------------------------------------------
+
+const TESTIMONIAL_ACCENTS = [
+  "#046BD2", // blue
+  "#FFB800", // gold
+  "#10B981", // green
+];
+
+function TestimonialsSection() {
+  return (
+    <section
+      aria-labelledby="testimonials-title"
+      className="bg-[color:var(--color-light-bg)]"
+    >
+      <div className="mx-auto w-full max-w-[1240px] px-4 py-16 md:px-6 md:py-20">
+        <SectionHeader
+          eyebrow="คู่มือ"
+          title="รีวิวจริงจากสถาบัน"
+          description="ประสบการณ์จริงจากผู้ที่เคยใช้บริการ Best Tutor Thailand"
+          centered
+          titleId="testimonials-title"
+        />
+        <div className="mt-10 grid gap-5 md:grid-cols-3">
+          {MOCK_TESTIMONIALS.map((review, index) => {
+            const accent = TESTIMONIAL_ACCENTS[index % TESTIMONIAL_ACCENTS.length];
+            return (
+              <figure
+                key={review.id}
+                className="relative flex flex-col gap-4 rounded-2xl border border-[color:var(--color-border)] bg-white p-6 shadow-sm"
+              >
+                <span
+                  aria-hidden
+                  className="block size-3 rounded-full"
+                  style={{ backgroundColor: accent }}
+                />
+                <div className="flex items-center gap-1">
+                  {Array.from({ length: review.rating }).map((_, i) => (
+                    <Star
+                      key={i}
+                      aria-hidden
+                      className="size-4 fill-[color:var(--color-cta)] text-[color:var(--color-cta)]"
+                    />
+                  ))}
+                </div>
+                <blockquote className="text-sm leading-6 text-[color:var(--color-body)]">
+                  “{review.quote}”
+                </blockquote>
+                <figcaption>
+                  <p className="text-sm font-semibold text-[color:var(--color-heading)]">
+                    {review.name}
+                  </p>
+                  <p className="text-xs text-[color:var(--color-muted)]">
+                    {review.role}
+                  </p>
+                </figcaption>
+              </figure>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ---- Section 6: Articles --------------------------------------------------
 
 function ArticlesSection() {
   const [feature, ...rest] = MOCK_FEATURED_ARTICLES;
@@ -430,79 +424,42 @@ function ArticlesSection() {
   );
 }
 
-// ---- Section 9: About -----------------------------------------------------
+// ---- Section 7: Partners (moved to bottom, blue BG) ----------------------
 
-function AboutSection() {
+function PartnersSection() {
   return (
-    <section aria-labelledby="about-title" className="bg-[color:var(--color-alt-bg)]">
-      <div className="mx-auto grid w-full max-w-[1240px] gap-8 px-4 py-16 md:grid-cols-2 md:gap-12 md:px-6 md:py-20">
-        <div className="flex flex-col justify-center gap-4">
-          <Badge variant="secondary" className="self-start bg-white text-[color:var(--color-primary)]">
-            <Award className="size-3.5" />
-            เกี่ยวกับเรา
-          </Badge>
-          <h2
-            id="about-title"
-            className="text-2xl font-bold leading-tight text-[color:var(--color-heading)] md:text-3xl"
-          >
-            Best Tutor Thailand — พันธมิตรทางการศึกษาที่คุณไว้วางใจ
-          </h2>
-          <p className="text-sm leading-7 text-[color:var(--color-body)] md:text-base">
-            เรารวบรวมติวเตอร์คุณภาพจากมหาวิทยาลัยชั้นนำทั่วประเทศ
-            พร้อมระบบคัดกรองที่เข้มงวด และได้รับการกล่าวถึงในรายการ Shark Tank Thailand
-            ในฐานะแพลตฟอร์มการศึกษาที่เติบโตอย่างรวดเร็ว
-          </p>
-          <ul className="grid gap-3 pt-2 sm:grid-cols-2">
-            {[
-              { icon: Users2, label: "ติวเตอร์ตรวจสอบคุณสมบัติ" },
-              { icon: BookOpenCheck, label: "ครอบคลุมทุกวิชาและทุกระดับ" },
-              { icon: Star, label: "คะแนนรีวิวเฉลี่ย 4.8/5" },
-              { icon: CheckCircle2, label: "เปลี่ยนครูฟรีในชั่วโมงแรก" },
-            ].map(({ icon: Icon, label }) => (
-              <li key={label} className="flex items-center gap-2 text-sm text-[color:var(--color-body)]">
-                <Icon className="size-4 text-[color:var(--color-primary)]" />
-                {label}
-              </li>
-            ))}
-          </ul>
-          <div className="pt-2">
-            <Button asChild className="h-11 bg-[color:var(--color-primary)] px-6 hover:bg-[color:var(--color-primary-hover)]">
-              <Link href="/find-tutor">
-                ปรึกษาทีมงานฟรี
-                <ArrowRight className="size-4" />
-              </Link>
-            </Button>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-2 gap-4">
-          {[
-            { value: "500+", label: "ติวเตอร์คุณภาพ" },
-            { value: "30,000+", label: "นักเรียนที่ไว้วางใจ" },
-            { value: "4.8/5", label: "คะแนนเฉลี่ย" },
-            { value: "24 ชม.", label: "จับคู่ติวเตอร์ได้ไว" },
-          ].map((stat) => (
-            <div
-              key={stat.label}
-              className="flex flex-col items-start gap-2 rounded-2xl border border-[color:var(--color-border)] bg-white p-5"
+    <section
+      aria-label="สถาบันคู่ความร่วมมือ"
+      className="bg-[color:var(--color-primary)]"
+    >
+      <div className="mx-auto w-full max-w-[1240px] px-4 py-16 text-center md:px-6 md:py-20">
+        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-white/70">
+          OUR CUSTOMERS
+        </p>
+        <h2 className="mt-3 text-2xl font-bold tracking-tight text-white md:text-3xl">
+          BEST TUTOR THAILAND
+        </h2>
+        <p className="mx-auto mt-3 max-w-2xl text-sm leading-6 text-white/75">
+          ติวเตอร์จากมหาวิทยาลัยชั้นนำของไทย ผ่านการคัดกรองคุณภาพก่อนเริ่มสอนจริงทุกคน
+        </p>
+        <ul className="mx-auto mt-10 flex flex-wrap items-center justify-center gap-3">
+          {MOCK_PARTNER_LOGOS.map((name) => (
+            <li
+              key={name}
+              className="inline-flex h-10 items-center rounded-full bg-white/15 px-4 text-xs font-semibold text-white backdrop-blur-sm transition-colors hover:bg-white/25 md:text-sm"
             >
-              <span className="text-2xl font-bold text-[color:var(--color-primary)] md:text-3xl">
-                {stat.value}
-              </span>
-              <span className="text-xs font-medium text-[color:var(--color-muted)] md:text-sm">
-                {stat.label}
-              </span>
-            </div>
+              {name}
+            </li>
           ))}
-        </div>
+        </ul>
       </div>
     </section>
   );
 }
 
-// ---- Section 10: Contact --------------------------------------------------
+// ---- Section 8: About + Contact (merged) ---------------------------------
 
-function ContactSection() {
+function AboutSection() {
   interface ContactItem {
     icon: React.ComponentType<{ className?: string }>;
     label: string;
@@ -511,16 +468,16 @@ function ContactSection() {
   }
   const contactItems: ContactItem[] = [
     {
-      icon: Phone,
-      label: "โทรศัพท์",
-      value: CONTACT_INFO.phone,
-      href: CONTACT_INFO.phoneHref,
-    },
-    {
       icon: Mail,
       label: "อีเมล",
       value: CONTACT_INFO.email,
       href: `mailto:${CONTACT_INFO.email}`,
+    },
+    {
+      icon: Phone,
+      label: "โทรศัพท์",
+      value: CONTACT_INFO.phone,
+      href: CONTACT_INFO.phoneHref,
     },
     {
       icon: MapPin,
@@ -535,23 +492,65 @@ function ContactSection() {
   ];
 
   return (
-    <section aria-labelledby="contact-title" className="bg-white">
+    <section
+      aria-labelledby="about-title"
+      className="bg-[color:var(--color-alt-bg)]"
+    >
       <div className="mx-auto w-full max-w-[1240px] px-4 py-16 md:px-6 md:py-20">
-        <SectionHeader
-          eyebrow="ติดต่อเรา"
-          title="พร้อมช่วยคุณหาครูที่ใช่"
-          description="ทีมงานพร้อมให้คำปรึกษาและจับคู่ติวเตอร์ที่เหมาะสมให้คุณในเวลาอันรวดเร็ว"
-          centered
-          titleId="contact-title"
-        />
-        <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="flex flex-col items-center gap-3 text-center">
+          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[color:var(--color-primary)]">
+            ติดต่อเรา
+          </p>
+          <h2
+            id="about-title"
+            className="text-2xl font-bold leading-tight text-[color:var(--color-heading)] md:text-3xl"
+          >
+            เกี่ยวกับเรา
+          </h2>
+          <p className="max-w-3xl text-sm leading-7 text-[color:var(--color-body)] md:text-base">
+            Best Tutor Thailand รวบรวมติวเตอร์คุณภาพจากมหาวิทยาลัยชั้นนำทั่วประเทศ
+            พร้อมระบบคัดกรองที่เข้มงวด และได้รับการกล่าวถึงในรายการ Shark Tank Thailand
+            ในฐานะแพลตฟอร์มการศึกษาที่เติบโตอย่างรวดเร็ว
+            พร้อมช่วยคุณจับคู่ติวเตอร์ที่เหมาะสมในเวลาไม่เกิน 24 ชั่วโมง
+          </p>
+
+          <div className="flex flex-wrap items-center justify-center gap-4 pt-4 text-sm text-[color:var(--color-body)] md:text-base">
+            <span className="inline-flex items-center gap-2">
+              <BookOpenCheck className="size-4 text-[color:var(--color-primary)]" />
+              ครอบคลุมทุกวิชา
+            </span>
+            <span className="inline-flex items-center gap-2">
+              <Lightbulb className="size-4 text-[color:var(--color-primary)]" />
+              ปรึกษาฟรีก่อนเริ่มเรียน
+            </span>
+            <span className="inline-flex items-center gap-2">
+              <Star className="size-4 fill-[color:var(--color-cta)] text-[color:var(--color-cta)]" />
+              คะแนนรีวิวเฉลี่ย 4.8/5
+            </span>
+          </div>
+
+          <div className="pt-4">
+            <Button
+              asChild
+              className="h-11 bg-[color:var(--color-primary)] px-6 hover:bg-[color:var(--color-primary-hover)]"
+            >
+              <Link href="/find-tutor">
+                ปรึกษาทีมงานฟรี
+                <ArrowRight className="size-4" />
+              </Link>
+            </Button>
+          </div>
+        </div>
+
+        {/* Contact cards row */}
+        <div className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {contactItems.map(({ icon: Icon, label, value, href }) => {
             const inner = (
               <>
-                <span className="flex size-10 items-center justify-center rounded-xl bg-[color:var(--color-light-bg)] text-[color:var(--color-primary)]">
+                <span className="flex size-12 items-center justify-center rounded-full bg-[color:var(--color-light-bg)] text-[color:var(--color-primary)]">
                   <Icon className="size-5" />
                 </span>
-                <div className="flex flex-col gap-1">
+                <div className="flex flex-col items-center gap-1">
                   <span className="text-xs font-medium uppercase tracking-wider text-[color:var(--color-muted)]">
                     {label}
                   </span>
@@ -566,7 +565,7 @@ function ContactSection() {
                 <a
                   key={label}
                   href={href}
-                  className="flex items-start gap-4 rounded-2xl border border-[color:var(--color-border)] bg-white p-5 shadow-sm transition-all hover:-translate-y-0.5 hover:border-[color:var(--color-primary)] hover:shadow-md"
+                  className="flex flex-col items-center gap-3 rounded-2xl border border-[color:var(--color-border)] bg-white p-6 text-center shadow-sm transition-all hover:-translate-y-0.5 hover:border-[color:var(--color-primary)] hover:shadow-md"
                 >
                   {inner}
                 </a>
@@ -575,7 +574,7 @@ function ContactSection() {
             return (
               <div
                 key={label}
-                className="flex items-start gap-4 rounded-2xl border border-[color:var(--color-border)] bg-white p-5 shadow-sm"
+                className="flex flex-col items-center gap-3 rounded-2xl border border-[color:var(--color-border)] bg-white p-6 text-center shadow-sm"
               >
                 {inner}
               </div>
