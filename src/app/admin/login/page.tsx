@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { BookOpen } from "lucide-react";
 
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -47,14 +47,14 @@ export default function AdminLoginPage() {
       <div className="w-full max-w-md">
         {/* Logo */}
         <div className="flex flex-col items-center mb-8">
-          <div className="flex items-center gap-2 mb-2">
-            <div className="w-10 h-10 rounded-lg bg-[#046bd2] flex items-center justify-center">
-              <BookOpen className="size-5 text-white" />
-            </div>
-            <span className="text-xl font-semibold text-[#1e293b]">
-              Best Tutor Thailand
-            </span>
-          </div>
+          <Image
+            src="/images/logo.png"
+            alt="Best Tutor Thailand"
+            width={167}
+            height={83}
+            priority
+            className="h-14 w-auto mb-3"
+          />
           <p className="text-sm text-[#334155]">ระบบจัดการหลังบ้าน</p>
         </div>
 

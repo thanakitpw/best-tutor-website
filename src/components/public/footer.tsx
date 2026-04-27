@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { MessageCircle, Phone, Mail, MapPin, Clock } from "lucide-react";
 
@@ -16,22 +17,18 @@ export function Footer() {
         <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-4">
           {/* Brand */}
           <div className="space-y-4">
-            <div className="flex items-center gap-2">
-              <span
-                aria-hidden
-                className="flex h-10 w-10 items-center justify-center rounded-lg bg-[color:var(--color-primary)] text-lg font-bold text-white"
-              >
-                BT
-              </span>
-              <div className="flex flex-col leading-tight">
-                <span className="text-sm font-bold text-[color:var(--color-heading)]">
-                  Best Tutor Thailand
-                </span>
-                <span className="text-[11px] font-medium text-[color:var(--color-muted)]">
-                  เป้าหมายของคุณ ความสำเร็จของเรา
-                </span>
-              </div>
-            </div>
+            <Link href="/" className="inline-flex items-center" aria-label="Best Tutor Thailand">
+              <Image
+                src="/images/logo.png"
+                alt="Best Tutor Thailand"
+                width={167}
+                height={83}
+                className="h-12 w-auto"
+              />
+            </Link>
+            <p className="text-xs font-medium text-[color:var(--color-muted)]">
+              เป้าหมายของคุณ ความสำเร็จของเรา
+            </p>
             <p className="text-sm leading-6 text-[color:var(--color-muted)]">
               เรามุ่งมั่นจับคู่ผู้เรียนกับติวเตอร์ระดับแนวหน้า พร้อมนำทางคุณสู่ความสำเร็จ
             </p>

@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
@@ -17,23 +18,17 @@ export function Navbar() {
         {/* Logo */}
         <Link
           href="/"
-          className="flex items-center gap-2"
+          className="flex items-center"
           aria-label="Best Tutor Thailand — หน้าแรก"
         >
-          <span
-            aria-hidden
-            className="flex h-10 w-10 items-center justify-center rounded-lg bg-[color:var(--color-primary)] text-lg font-bold text-white shadow-sm"
-          >
-            BT
-          </span>
-          <span className="hidden flex-col leading-tight sm:flex">
-            <span className="text-sm font-bold text-[color:var(--color-heading)]">
-              Best Tutor
-            </span>
-            <span className="text-[11px] font-medium text-[color:var(--color-muted)]">
-              Thailand
-            </span>
-          </span>
+          <Image
+            src="/images/logo.png"
+            alt="Best Tutor Thailand"
+            width={167}
+            height={83}
+            priority
+            className="h-10 w-auto md:h-12"
+          />
         </Link>
 
         {/* Desktop menu */}

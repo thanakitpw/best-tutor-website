@@ -1,8 +1,9 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { BookOpen, Users, LogOut } from "lucide-react";
+import { Users, LogOut } from "lucide-react";
 
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 import { cn } from "@/lib/utils";
@@ -28,16 +29,16 @@ export function AdminSidebar() {
   return (
     <aside className="fixed inset-y-0 left-0 z-40 flex h-full w-60 flex-col border-r border-[#D1D5DB] bg-white">
       {/* Logo */}
-      <div className="flex items-center gap-2.5 border-b border-[#D1D5DB] px-5 py-4">
-        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#046bd2]">
-          <BookOpen className="size-4 text-white" />
-        </div>
-        <div className="flex flex-col">
-          <span className="text-sm font-semibold leading-tight text-[#1e293b]">
-            Best Tutor
-          </span>
-          <span className="text-xs text-[#334155]">Admin Panel</span>
-        </div>
+      <div className="flex flex-col gap-1 border-b border-[#D1D5DB] px-5 py-4">
+        <Image
+          src="/images/logo.png"
+          alt="Best Tutor Thailand"
+          width={167}
+          height={83}
+          priority
+          className="h-10 w-auto"
+        />
+        <span className="text-xs text-[#334155]">Admin Panel</span>
       </div>
 
       {/* Nav */}
